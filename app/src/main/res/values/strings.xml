@@ -13,4 +13,17 @@
     <string name="ac_sing_out">Вихід</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
+
+    <!-- Sing Dialog -->
+    <string name="registration_hint_password">Введіть пароль</string>
+    <string name="registration_hint_mail">Введіть Email</string>
+    <string name="sing_up">Реєстрація</string>
+    <string name="sing_in">Вхід</string>
+    <string name="sing_up_action">Зареєструватись</string>
+    <string name="sing_up_error">Не вдалось зареєструватись</string>
+    <string name="sing_in_action">Увійти</string>
+    <string name="forget_password">Забули пароль</string>
+    <string name="send_verification_error">Не вдалось надіслати email для підтверждення!</string>
+    <string name="send_verification_done">На Ваш email було надіслано посилання для підтверждення аккаунту, будь-ласка підтвердіть ваш аккаунт!</string>
+
 </resources>
