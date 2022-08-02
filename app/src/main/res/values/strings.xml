@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Bulletin board</string>
+    <!-- Menu Drawer -->
+    <string name="ad_cat1">Оголошення</string>
+    <string name="ad_my_ads">Мої оголошення</string>
+    <string name="ad_car">Авто</string>
+    <string name="ad_pc">Компьютери</string>
+    <string name="ad_phone">Смартфони</string>
+    <string name="ad_dm">Побутова техніка</string>
+    <string name="ac_cat2">Аккаунт</string>
+    <string name="ac_sing_up">Реєстрація</string>
+    <string name="ac_sing_in">Вхід</string>
+    <string name="ac_sing_out">Вихід</string>
+</resources>
