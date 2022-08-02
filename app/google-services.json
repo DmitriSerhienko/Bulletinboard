@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "385367408819",
+    "project_id": "bulettinboard",
+    "storage_bucket": "bulettinboard.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:385367408819:android:7eacdf045bebb8037c30c6",
+        "android_client_info": {
+          "package_name": "com.DimasKach.bulletinboard"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "385367408819-7tfl549j31fsumduut76rbpvn0u29g2o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUPa9aNLtp3qBhKGCpBsaJEcWzjSJee7w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "385367408819-7tfl549j31fsumduut76rbpvn0u29g2o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
