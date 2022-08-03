@@ -19,7 +19,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_sing_title" />
+        app:layout_constraintTop_toBottomOf="@+id/tvDialogMessage" />
 
     <TextView
         android:id="@+id/tv_sing_title"
@@ -71,4 +71,17 @@
         app:layout_constraintEnd_toEndOf="@+id/edSingMail"
         app:layout_constraintStart_toStartOf="@+id/edSingMail"
         app:layout_constraintTop_toBottomOf="@+id/btSingUpIn" />
+
+    <TextView
+        android:id="@+id/tvDialogMessage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center_horizontal"
+        android:text="@string/dialog_reset_mail_message"
+        android:textColor="@color/colour_red"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/edSingMail"
+        app:layout_constraintStart_toStartOf="@+id/edSingMail"
+        app:layout_constraintTop_toBottomOf="@+id/tv_sing_title" />
 </androidx.constraintlayout.widget.ConstraintLayout>
