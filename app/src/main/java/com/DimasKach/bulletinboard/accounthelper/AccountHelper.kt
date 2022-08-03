@@ -28,6 +28,7 @@ class AccountHelper(act:MainActivity) {
                     task ->
                 if (task.isSuccessful){
                     activ.uiUpdate(task.result?.user)
+
                 } else {
                     Toast.makeText(activ,activ.resources.getString(R.string.sing_in_error), Toast.LENGTH_LONG).show()
                 }
