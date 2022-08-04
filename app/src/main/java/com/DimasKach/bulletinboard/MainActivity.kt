@@ -1,15 +1,22 @@
 package com.DimasKach.bulletinboard
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import com.DimasKach.bulletinboard.activity.EditAdsAct
 import com.DimasKach.bulletinboard.databinding.ActivityMainBinding
 import com.DimasKach.bulletinboard.dialoghelper.DialogConst
 import com.DimasKach.bulletinboard.dialoghelper.DialogHelper
+import com.DimasKach.bulletinboard.dialoghelper.GoogleAccConst
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.common.api.ApiException
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -29,12 +36,42 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         init()
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId == R.id.id_new_ads){
+            val i = Intent(this,EditAdsAct::class.java)
+            startActivity(i)
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(requestCode == GoogleAccConst.GOOGLE_SIGN_IN_REQUEST_CODE) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                if(account != null) {
+                    dialogHelper.accHelper.signInFirebaseWithGoogle(account.idToken!!)
+                }
+
+            } catch(e:ApiException){
+                Log.d("MyLog", "Api error: ${e.message}")
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
     override fun onStart() {
         super.onStart()
         uiUpdate(mAuth.currentUser)
     }
 
     private fun init() {
+        setSupportActionBar(binding.mainContent.toolbar)
         val toggle =
             ActionBarDrawerToggle(this,
                 binding.drawerLayout,
@@ -73,6 +110,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
             R.id.ac_sing_out -> {
                 uiUpdate(null)
                 mAuth.signOut()
+                dialogHelper.accHelper.signOutG()
             }
         }
         binding.drawerLayout.closeDrawer(GravityCompat.START)

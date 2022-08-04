@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "385367408819-tuufpe28t0obkvunkc94ft8ggmjpohep.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.DimasKach.bulletinboard",
+            "certificate_hash": "8da4264e442c696c8ca292de6e4af98ee35e0791"
+          }
+        },
+        {
           "client_id": "385367408819-7tfl549j31fsumduut76rbpvn0u29g2o.apps.googleusercontent.com",
           "client_type": 3
         }

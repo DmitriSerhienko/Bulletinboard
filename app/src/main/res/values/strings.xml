@@ -29,5 +29,8 @@
     <string name="forget_password">Забули пароль</string>
     <string name="send_verification_error">Не вдалось надіслати email для підтверждення!</string>
     <string name="send_verification_done">На Ваш email було надіслано посилання для підтверждення аккаунту, будь-ласка підтвердіть ваш аккаунт!</string>
+    <!-- Sing Dialog -->
+    <string name="link_done">Email підключено до Вашого  Google аккаунту</string>
+    <string name="enter_to_g">У Вас вже є аккаунт з даним Email</string>
 
 </resources>

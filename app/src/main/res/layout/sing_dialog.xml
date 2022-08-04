@@ -12,6 +12,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
+        android:background="@drawable/common_google_signin_btn_icon_dark_normal_background"
         android:ems="10"
         android:gravity="center"
         android:hint="@string/registration_hint_mail"
@@ -40,6 +41,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
+        android:background="@drawable/common_google_signin_btn_icon_dark_normal_background"
         android:ems="10"
         android:gravity="center"
         android:hint="@string/registration_hint_password"
@@ -53,21 +55,25 @@
         android:id="@+id/btSingUpIn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
+        android:background="@drawable/common_google_signin_btn_icon_dark_normal_background"
         android:text="@string/sing_up_action"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/edSingMail"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/edSingMail"
-        app:layout_constraintTop_toBottomOf="@+id/edSingPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/btGoogleSignIn"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/btForgetP"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/common_google_signin_btn_icon_dark_normal_background"
         android:text="@string/forget_password"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/edSingMail"
         app:layout_constraintStart_toStartOf="@+id/edSingMail"
         app:layout_constraintTop_toBottomOf="@+id/btSingUpIn" />
@@ -84,4 +90,14 @@
         app:layout_constraintEnd_toEndOf="@+id/edSingMail"
         app:layout_constraintStart_toStartOf="@+id/edSingMail"
         app:layout_constraintTop_toBottomOf="@+id/tv_sing_title" />
+
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/btGoogleSignIn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Button"
+        app:buttonSize="standard"
+        app:layout_constraintEnd_toEndOf="@+id/edSingPassword"
+        app:layout_constraintStart_toStartOf="@+id/edSingPassword"
+        app:layout_constraintTop_toBottomOf="@+id/edSingPassword" />
 </androidx.constraintlayout.widget.ConstraintLayout>

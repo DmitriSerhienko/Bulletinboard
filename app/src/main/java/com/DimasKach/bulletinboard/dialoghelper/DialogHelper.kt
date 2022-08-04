@@ -10,7 +10,7 @@ import com.DimasKach.bulletinboard.databinding.SingDialogBinding
 
 class DialogHelper(act: MainActivity) {
     private val activ = act
-    private val accHelper = AccountHelper(activ)
+    val accHelper = AccountHelper(activ)
 
     fun createSingDialog(index: Int) {
         val builder = AlertDialog.Builder(activ)
@@ -27,6 +27,10 @@ class DialogHelper(act: MainActivity) {
         binding.btForgetP.setOnClickListener {
             setOnClickResetPassword(binding, dialog)
 
+        }
+        binding.btGoogleSignIn.setOnClickListener {
+            accHelper.singInWithGoogle()
+            dialog.dismiss()
         }
 
         dialog.show()
