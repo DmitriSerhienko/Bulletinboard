@@ -15,6 +15,7 @@ import com.DimasKach.bulletinboard.databinding.ActivityMainBinding
 import com.DimasKach.bulletinboard.dialoghelper.DialogConst
 import com.DimasKach.bulletinboard.dialoghelper.DialogHelper
 import com.DimasKach.bulletinboard.dialoghelper.GoogleAccConst
+import com.fxn.pix.Pix
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
@@ -28,12 +29,14 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
     val mAuth = FirebaseAuth.getInstance()
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         init()
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
