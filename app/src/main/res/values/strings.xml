@@ -32,5 +32,7 @@
     <!-- Sing Dialog -->
     <string name="link_done">Email підключено до Вашого  Google аккаунту</string>
     <string name="enter_to_g">У Вас вже є аккаунт з даним Email</string>
-
+    <!-- Edit Activity -->
+    <string name="select_country">Обрати країну</string>
+    <string name="select_city">Обрати місто</string>
 </resources>
