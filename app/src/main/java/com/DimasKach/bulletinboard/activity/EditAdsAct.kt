@@ -12,12 +12,14 @@ import android.widget.Toast
 import com.DimasKach.bulletinboard.R
 import com.DimasKach.bulletinboard.databinding.ActivityEditAdsBinding
 import com.DimasKach.bulletinboard.dialogs.DialogSpinnerHelper
+import com.DimasKach.bulletinboard.fragments.FragmentCloseInterface
+import com.DimasKach.bulletinboard.fragments.ImageListFragment
 import com.DimasKach.bulletinboard.utils.CityHelper
 import com.DimasKach.bulletinboard.utils.ImagePicker
 import com.fxn.pix.Pix
 import com.fxn.utility.PermUtil
 
-class EditAdsAct : AppCompatActivity() {
+class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     lateinit var binding: ActivityEditAdsBinding
     private val dialog = DialogSpinnerHelper()
     private var isImagesPermissionGranted = false
@@ -78,7 +80,14 @@ class EditAdsAct : AppCompatActivity() {
         }
     }
     fun onClickGetImages(view: View){
-        ImagePicker.getImages(this)
+        binding.scrollViewMain.visibility = View.GONE
+        val fm = supportFragmentManager.beginTransaction()
+        fm.replace(R.id.place_holder, ImageListFragment(this) )
+        fm.commit()
+    }
+
+    override fun onFragClose() {
+        binding.scrollViewMain.visibility = View.VISIBLE
     }
 
 
