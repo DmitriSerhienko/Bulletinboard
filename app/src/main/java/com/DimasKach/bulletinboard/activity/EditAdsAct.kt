@@ -1,5 +1,9 @@
 package com.DimasKach.bulletinboard.activity
 
+import android.annotation.SuppressLint
+import android.app.people.PeopleManager
+import android.content.Intent
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -9,15 +13,46 @@ import com.DimasKach.bulletinboard.R
 import com.DimasKach.bulletinboard.databinding.ActivityEditAdsBinding
 import com.DimasKach.bulletinboard.dialogs.DialogSpinnerHelper
 import com.DimasKach.bulletinboard.utils.CityHelper
+import com.DimasKach.bulletinboard.utils.ImagePicker
+import com.fxn.pix.Pix
+import com.fxn.utility.PermUtil
 
 class EditAdsAct : AppCompatActivity() {
     lateinit var binding: ActivityEditAdsBinding
     private val dialog = DialogSpinnerHelper()
+    private var isImagesPermissionGranted = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditAdsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         init()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            PermUtil.REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    ImagePicker.getImages(this)
+                } else {
+
+                    Toast.makeText(this, "Доступ не надано", Toast.LENGTH_LONG).show()
+                }
+                return
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(resultCode == RESULT_OK && requestCode == ImagePicker.REQUEST_CODE_IMAGES) {
+            if(data != null){
+                val returnValue = data.getStringArrayListExtra(Pix.IMAGE_RESULTS)
+            }
+        }
     }
 
     private fun init(){
@@ -41,7 +76,9 @@ class EditAdsAct : AppCompatActivity() {
         } else {
             Toast.makeText(this, R.string.not_select_country, Toast.LENGTH_LONG).show()
         }
-
+    }
+    fun onClickGetImages(view: View){
+        ImagePicker.getImages(this)
     }
 
 
