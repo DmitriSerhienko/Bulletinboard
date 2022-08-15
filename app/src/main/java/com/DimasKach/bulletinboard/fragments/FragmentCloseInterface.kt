@@ -1,7 +1,7 @@
 package com.DimasKach.bulletinboard.fragments
 
 interface FragmentCloseInterface {
-    fun onFragClose(){
+    fun onFragClose(list: ArrayList<SelectImageItem>){
 
     }
 }
