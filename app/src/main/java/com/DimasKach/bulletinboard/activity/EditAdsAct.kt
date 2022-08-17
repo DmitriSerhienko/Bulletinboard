@@ -22,6 +22,7 @@ import com.fxn.pix.Pix
 import com.fxn.utility.PermUtil
 
 class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
+    private var chooseImageFragment: ImageListFragment? = null
     lateinit var binding: ActivityEditAdsBinding
     private val dialog = DialogSpinnerHelper()
     private var isImagesPermissionGranted = false
@@ -37,7 +38,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
-        grantResults: IntArray
+        grantResults: IntArray,
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
@@ -55,20 +56,24 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(resultCode == RESULT_OK && requestCode == ImagePicker.REQUEST_CODE_IMAGES) {
-            if(data != null){
+        if (resultCode == RESULT_OK && requestCode == ImagePicker.REQUEST_CODE_IMAGES) {
+            if (data != null) {
                 val returnValues = data.getStringArrayListExtra(Pix.IMAGE_RESULTS)
-                if(returnValues?.size!! > 1) {
+                if (returnValues?.size!! > 1 && chooseImageFragment == null) {
+                    chooseImageFragment = ImageListFragment(this, returnValues)
                     binding.scrollViewMain.visibility = View.GONE
                     val fm = supportFragmentManager.beginTransaction()
-                    fm.replace(R.id.place_holder, ImageListFragment(this, returnValues))
+                    fm.replace(R.id.place_holder, chooseImageFragment!!)
                     fm.commit()
+                } else if (chooseImageFragment != null) {
+                    chooseImageFragment?.upDateAdapter(returnValues)
+
                 }
             }
         }
     }
 
-    private fun init(){
+    private fun init() {
         imageAdapter = ImageAdapter()
         binding.vpImages.adapter = imageAdapter
 
@@ -76,29 +81,32 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
 
     //OnClicks
 
-    fun onClickSelectCountry(view: View){
+    fun onClickSelectCountry(view: View) {
         val listCountry = CityHelper.getAllCountries(this)
         dialog.showSpinnerDialog(this, listCountry, binding.tvCountry)
-        if(binding.tvCity.text.toString() != getString(R.string.select_city)){
+        if (binding.tvCity.text.toString() != getString(R.string.select_city)) {
             binding.tvCity.text = getString(R.string.select_city)
         }
     }
-    fun onClickSelectCity(view: View){
+
+    fun onClickSelectCity(view: View) {
         val selectedCountry = binding.tvCountry.text.toString()
-        if (selectedCountry != getString(R.string.select_country)){
-            val listCity = CityHelper.getAllCities( selectedCountry,this)
+        if (selectedCountry != getString(R.string.select_country)) {
+            val listCity = CityHelper.getAllCities(selectedCountry, this)
             dialog.showSpinnerDialog(this, listCity, binding.tvCity)
         } else {
             Toast.makeText(this, R.string.not_select_country, Toast.LENGTH_LONG).show()
         }
     }
-    fun onClickGetImages(view: View){
+
+    fun onClickGetImages(view: View) {
         ImagePicker.getImages(this, 3)
     }
 
     override fun onFragClose(list: ArrayList<SelectImageItem>) {
         binding.scrollViewMain.visibility = View.VISIBLE
         imageAdapter.update(list)
+        chooseImageFragment = null
     }
 
 
