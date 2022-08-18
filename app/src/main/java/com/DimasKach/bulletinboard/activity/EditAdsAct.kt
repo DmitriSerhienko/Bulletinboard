@@ -23,6 +23,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     private val dialog = DialogSpinnerHelper()
     private var isImagesPermissionGranted = false
     private lateinit var imageAdapter: ImageAdapter
+    var editImagePos = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +41,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         when (requestCode) {
             PermUtil.REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    ImagePicker.getImages(this, 3)
+                    ImagePicker.getImages(this, 3, ImagePicker.REQUEST_CODE_IMAGES)
                 } else {
 
                     Toast.makeText(this, "Доступ не надано", Toast.LENGTH_LONG).show()
@@ -59,8 +60,12 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
                     openChooseImageFrag(returnValues)
                 } else if (chooseImageFragment != null) {
                     chooseImageFragment?.upDateAdapter(returnValues)
-
                 }
+            }
+        } else if (resultCode == RESULT_OK && requestCode == ImagePicker.REQUEST_CODE_SINGLE_IMAGES){
+            if (data != null) {
+                val uris = data.getStringArrayListExtra(Pix.IMAGE_RESULTS)
+                chooseImageFragment?.setSingleImage(uris?.get(0)!!, editImagePos)
             }
         }
     }
@@ -93,7 +98,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
 
     fun onClickGetImages(view: View) {
         if(imageAdapter.mainArray.size == 0 ){
-            ImagePicker.getImages(this, 3)
+            ImagePicker.getImages(this, 3, ImagePicker.REQUEST_CODE_IMAGES)
         } else{
             openChooseImageFrag(imageAdapter.mainArray)
         }

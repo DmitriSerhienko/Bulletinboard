@@ -55,12 +55,16 @@ class ImageListFragment(private val fragCloseInterface: FragmentCloseInterface, 
         }
         addItem.setOnMenuItemClickListener {
             val imageCount = ImagePicker.MAX_IMAGE_COUNT - adapter.mainArray.size
-            ImagePicker.getImages(activity as AppCompatActivity, imageCount)
+            ImagePicker.getImages(activity as AppCompatActivity, imageCount , ImagePicker.REQUEST_CODE_IMAGES)
             true
         }
     }
 
     fun upDateAdapter( newList: ArrayList<String>){
         adapter.updateAdapter(newList, false)
+    }
+    fun setSingleImage(uri: String, pos: Int){
+        adapter.mainArray[pos] = uri
+        adapter.notifyDataSetChanged()
     }
 }
