@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.DimasKach.bulletinboard.R
@@ -13,6 +14,7 @@ import com.DimasKach.bulletinboard.dialogs.DialogSpinnerHelper
 import com.DimasKach.bulletinboard.fragments.FragmentCloseInterface
 import com.DimasKach.bulletinboard.fragments.ImageListFragment
 import com.DimasKach.bulletinboard.utils.CityHelper
+import com.DimasKach.bulletinboard.utils.ImageManager
 import com.DimasKach.bulletinboard.utils.ImagePicker
 import com.fxn.pix.Pix
 import com.fxn.utility.PermUtil
@@ -59,7 +61,10 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
                 if (returnValues?.size!! > 1 && chooseImageFragment == null) {
                     openChooseImageFrag(returnValues)
                 } else if (returnValues.size == 1 && chooseImageFragment == null) {
-                    imageAdapter.update(returnValues)
+                  //  imageAdapter.update(returnValues)
+                    val tempList = ImageManager.getImageSize(returnValues[0])
+                    Log.d("MyLog", "Width : ${tempList[0]}")
+                    Log.d("MyLog", "Height : ${tempList[1]}")
                 } else if (chooseImageFragment != null) {
                     chooseImageFragment?.upDateAdapter(returnValues)
                 }
