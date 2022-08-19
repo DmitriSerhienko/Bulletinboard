@@ -40,7 +40,8 @@ class ImageListFragment(private val fragCloseInterface: FragmentCloseInterface, 
         binding.rcViewSelectImage.layoutManager = LinearLayoutManager(activity)
         binding.rcViewSelectImage.adapter = adapter
         job = CoroutineScope(Dispatchers.Main).launch {
-            ImageManager.imageResize(newList)
+            val t = ImageManager.imageResize(newList)
+            Log.d("MyLog", "Result: $t ")
         }
 
         //adapter.updateAdapter(newList, true)

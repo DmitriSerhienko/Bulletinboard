@@ -4,6 +4,7 @@ import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.exifinterface.media.ExifInterface
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
 import java.io.File
@@ -42,7 +43,7 @@ object ImageManager {
         return rotation
     }
 
-    suspend fun imageResize(uris: List<String>) = withContext(Dispatchers.IO) {
+    suspend fun imageResize(uris: List<String>) : String = withContext(Dispatchers.IO) {
         val tempList = ArrayList<List<Int>>()
         for (n in uris.indices) {
             val size = getImageSize(uris[n])
@@ -65,6 +66,8 @@ object ImageManager {
             }
 
         }
+        delay(5000)
+        return@withContext "Done"
 
     }
 
