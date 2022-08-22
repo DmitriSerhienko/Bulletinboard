@@ -2,6 +2,7 @@ package com.DimasKach.bulletinboard.activity
 
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -107,18 +108,19 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         if(imageAdapter.mainArray.size == 0 ){
             ImagePicker.getImages(this, 3, ImagePicker.REQUEST_CODE_IMAGES)
         } else{
-            openChooseImageFrag(imageAdapter.mainArray)
+            openChooseImageFrag(null)
+            chooseImageFragment?.upDateAdapterFromEdit(imageAdapter.mainArray)
         }
 
     }
 
-    override fun onFragClose(list: ArrayList<String>) {
+    override fun onFragClose(list: ArrayList<Bitmap>) {
         binding.scrollViewMain.visibility = View.VISIBLE
         imageAdapter.update(list)
         chooseImageFragment = null
     }
 
-    private fun openChooseImageFrag(newList: ArrayList<String>){
+    private fun openChooseImageFrag(newList: ArrayList<String>?){
         chooseImageFragment = ImageListFragment(this, newList)
         binding.scrollViewMain.visibility = View.GONE
         val fm = supportFragmentManager.beginTransaction()

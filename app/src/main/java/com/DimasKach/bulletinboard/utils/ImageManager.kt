@@ -13,9 +13,9 @@ import java.io.File
 
 
 object ImageManager {
-    const val MAX_IMAGE_SIZE = 1000
-    const val WIDTH = 0
-    const val HEIGHT = 1
+    private const val MAX_IMAGE_SIZE = 1000
+    private const val WIDTH = 0
+    private const val HEIGHT = 1
 
 
     fun getImageSize(uri: String): List<Int> {
@@ -45,7 +45,7 @@ object ImageManager {
         return rotation
     }
 
-    suspend fun imageResize(uris: List<String>) : List<Bitmap> = withContext(Dispatchers.IO) {
+    suspend fun imageResize(uris: List<String>): List<Bitmap> = withContext(Dispatchers.IO) {
         val tempList = ArrayList<List<Int>>()
         val bitmapList = ArrayList<Bitmap>()
         for (n in uris.indices) {
@@ -62,15 +62,19 @@ object ImageManager {
 
             } else {
                 if (size[HEIGHT] > MAX_IMAGE_SIZE) {
-                    tempList.add(listOf( (MAX_IMAGE_SIZE * imageRatio).toInt(), MAX_IMAGE_SIZE))
+                    tempList.add(listOf((MAX_IMAGE_SIZE * imageRatio).toInt(), MAX_IMAGE_SIZE))
                 } else {
                     tempList.add(listOf(size[WIDTH], size[HEIGHT]))
                 }
             }
 
         }
-        for (i in uris.indices){
-            bitmapList.add(Picasso.get().load(File(uris[])))
+        for (i in uris.indices) {
+        kotlin.runCatching {
+                bitmapList.add(Picasso.get().load(File(uris[i]))
+                    .resize(tempList[i][WIDTH], tempList[i][HEIGHT]).get())
+            }
+
         }
 
 
