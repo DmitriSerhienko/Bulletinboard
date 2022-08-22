@@ -1,8 +1,10 @@
 package com.DimasKach.bulletinboard.utils
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.exifinterface.media.ExifInterface
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -43,8 +45,9 @@ object ImageManager {
         return rotation
     }
 
-    suspend fun imageResize(uris: List<String>) : String = withContext(Dispatchers.IO) {
+    suspend fun imageResize(uris: List<String>) : List<Bitmap> = withContext(Dispatchers.IO) {
         val tempList = ArrayList<List<Int>>()
+        val bitmapList = ArrayList<Bitmap>()
         for (n in uris.indices) {
             val size = getImageSize(uris[n])
             val imageRatio = size[WIDTH].toFloat() / size[HEIGHT].toFloat()
@@ -66,8 +69,13 @@ object ImageManager {
             }
 
         }
-        delay(5000)
-        return@withContext "Done"
+        for (i in uris.indices){
+            bitmapList.add(Picasso.get().load(File(uris[])))
+        }
+
+
+
+        return@withContext bitmapList
 
     }
 
