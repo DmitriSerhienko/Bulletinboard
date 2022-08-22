@@ -1,19 +1,20 @@
 package com.DimasKach.bulletinboard.fragments
 
+import android.app.Activity
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.DimasKach.bulletinboard.R
 import com.DimasKach.bulletinboard.databinding.ListImageFragmentBinding
+import com.DimasKach.bulletinboard.dialoghelper.ProgressDialog
 import com.DimasKach.bulletinboard.utils.ImageManager
 import com.DimasKach.bulletinboard.utils.ImagePicker
 import com.DimasKach.bulletinboard.utils.ItemTouchMoveCallback
@@ -40,12 +41,8 @@ class ImageListFragment(private val fragCloseInterface: FragmentCloseInterface, 
         touchHelper.attachToRecyclerView(binding.rcViewSelectImage)
         binding.rcViewSelectImage.layoutManager = LinearLayoutManager(activity)
         binding.rcViewSelectImage.adapter = adapter
-        if(newList != null) {
-            job = CoroutineScope(Dispatchers.Main).launch {
-                val bitmapList = ImageManager.imageResize(newList)
-                adapter.updateAdapter(bitmapList, true)
-            }
-        }
+        if(newList != null) resizeSelectedImage(newList, true)
+
     }
 
     fun upDateAdapterFromEdit(bitmapList : List<Bitmap>){
@@ -56,6 +53,14 @@ class ImageListFragment(private val fragCloseInterface: FragmentCloseInterface, 
         super.onDetach()
         fragCloseInterface.onFragClose(adapter.mainArray)
         job?.cancel()
+    }
+    private fun resizeSelectedImage (newList: ArrayList<String>, needClear: Boolean){
+        job = CoroutineScope(Dispatchers.Main).launch {
+            val dialog = ProgressDialog.createProgressDialog(activity as Activity)
+            val bitmapList = ImageManager.imageResize(newList)
+            dialog.dismiss()
+            adapter.updateAdapter(bitmapList, needClear)
+        }
     }
 
     private fun setUpToolBar(){
@@ -78,15 +83,14 @@ class ImageListFragment(private val fragCloseInterface: FragmentCloseInterface, 
     }
 
     fun upDateAdapter( newList: ArrayList<String>){
-        job = CoroutineScope(Dispatchers.Main).launch {
-            val bitmapList = ImageManager.imageResize(newList)
-            adapter.updateAdapter(bitmapList, false)
-        }
-
+        resizeSelectedImage(newList, false)
     }
     fun setSingleImage(uri: String, pos: Int){
+        var pBar = binding.rcViewSelectImage[pos].findViewById<ProgressBar>(R.id.pBar)
         job = CoroutineScope(Dispatchers.Main).launch {
+            pBar.visibility = View.VISIBLE
             val bitmapList = ImageManager.imageResize(listOf(uri))
+            pBar.visibility = View.GONE
             adapter.mainArray[pos] = bitmapList[0]
             adapter.notifyDataSetChanged()
         }
