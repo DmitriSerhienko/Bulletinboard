@@ -49,6 +49,7 @@ class SelectImageRvAdapter: RecyclerView.Adapter<SelectImageRvAdapter.ImageHolde
         lateinit var imEditImage: ImageButton
         lateinit var imDeleteImage: ImageButton
 
+
         fun setData(bitMap: Bitmap){
             tvTitle = itemView.findViewById(R.id.tvTitle)
             image = itemView.findViewById(R.id.imageView)

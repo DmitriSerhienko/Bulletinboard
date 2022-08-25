@@ -14,5 +14,6 @@ object ProgressDialog {
         dialog.setCancelable(false)
         dialog.show()
         return dialog
+
     }
 }

@@ -12,6 +12,7 @@ class DialogHelper(act: MainActivity) {
     private val activ = act
     val accHelper = AccountHelper(activ)
 
+
     fun createSingDialog(index: Int) {
         val builder = AlertDialog.Builder(activ)
         val binding = SingDialogBinding.inflate(activ.layoutInflater)

@@ -82,6 +82,7 @@ class ImageListFragment(private val fragCloseInterface: FragmentCloseInterface, 
         }
     }
 
+
     fun upDateAdapter( newList: ArrayList<String>){
         resizeSelectedImage(newList, false)
     }
