@@ -25,7 +25,6 @@ class ImageAdapter: RecyclerView.Adapter<ImageAdapter.ImageHolder>() {
         return mainArray.size
     }
 
-
     class ImageHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         lateinit var imItem : ImageView
         fun setData (bitmap: Bitmap){
