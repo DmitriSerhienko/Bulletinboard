@@ -80,6 +80,7 @@ class ImageListFragment(private val fragCloseInterface: FragmentCloseInterface, 
             ImagePicker.getImages(activity as AppCompatActivity, imageCount , ImagePicker.REQUEST_CODE_IMAGES)
             true
         }
+
     }
 
     fun upDateAdapter( newList: ArrayList<String>){

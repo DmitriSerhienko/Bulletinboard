@@ -32,7 +32,6 @@ class DialogHelper(act: MainActivity) {
             accHelper.singInWithGoogle()
             dialog.dismiss()
         }
-
         dialog.show()
     }
 
