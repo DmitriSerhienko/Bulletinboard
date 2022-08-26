@@ -62,7 +62,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
                 if (returnValues?.size!! > 1 && chooseImageFragment == null) {
                     openChooseImageFrag(returnValues)
                 } else if (returnValues.size == 1 && chooseImageFragment == null) {
-                  //  imageAdapter.update(returnValues)
+                    //  imageAdapter.update(returnValues)
                     val tempList = ImageManager.getImageSize(returnValues[0])
                     Log.d("MyLog", "Width : ${tempList[0]}")
                     Log.d("MyLog", "Height : ${tempList[1]}")
@@ -70,7 +70,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
                     chooseImageFragment?.upDateAdapter(returnValues)
                 }
             }
-        } else if (resultCode == RESULT_OK && requestCode == ImagePicker.REQUEST_CODE_SINGLE_IMAGES){
+        } else if (resultCode == RESULT_OK && requestCode == ImagePicker.REQUEST_CODE_SINGLE_IMAGES) {
             if (data != null) {
                 val uris = data.getStringArrayListExtra(Pix.IMAGE_RESULTS)
                 chooseImageFragment?.setSingleImage(uris?.get(0)!!, editImagePos)
@@ -105,9 +105,9 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     }
 
     fun onClickGetImages(view: View) {
-        if(imageAdapter.mainArray.size == 0 ){
+        if (imageAdapter.mainArray.size == 0) {
             ImagePicker.getImages(this, 3, ImagePicker.REQUEST_CODE_IMAGES)
-        } else{
+        } else {
             openChooseImageFrag(null)
             chooseImageFragment?.upDateAdapterFromEdit(imageAdapter.mainArray)
         }
@@ -120,7 +120,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         chooseImageFragment = null
     }
 
-    private fun openChooseImageFrag(newList: ArrayList<String>?){
+    private fun openChooseImageFrag(newList: ArrayList<String>?) {
         chooseImageFragment = ImageListFragment(this, newList)
         binding.scrollViewMain.visibility = View.GONE
         val fm = supportFragmentManager.beginTransaction()

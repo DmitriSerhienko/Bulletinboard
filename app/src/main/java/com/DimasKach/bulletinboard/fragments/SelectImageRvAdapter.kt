@@ -16,10 +16,12 @@ import com.DimasKach.bulletinboard.activity.EditAdsAct
 import com.DimasKach.bulletinboard.utils.ImagePicker
 import com.DimasKach.bulletinboard.utils.ItemTouchMoveCallback
 
-class SelectImageRvAdapter: RecyclerView.Adapter<SelectImageRvAdapter.ImageHolder>(), ItemTouchMoveCallback.ItemTouchAdapter {
+class SelectImageRvAdapter : RecyclerView.Adapter<SelectImageRvAdapter.ImageHolder>(),
+    ItemTouchMoveCallback.ItemTouchAdapter {
     val mainArray = ArrayList<Bitmap>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.select_image_frag_view, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.select_image_frag_view, parent, false)
         return ImageHolder(view, parent.context, this)
     }
 
@@ -35,7 +37,7 @@ class SelectImageRvAdapter: RecyclerView.Adapter<SelectImageRvAdapter.ImageHolde
         val targetItem = mainArray[targetPos]
         mainArray[targetPos] = mainArray[startPos]
         mainArray[startPos] = targetItem
-        notifyItemMoved(startPos,targetPos)
+        notifyItemMoved(startPos, targetPos)
 
     }
 
@@ -43,19 +45,22 @@ class SelectImageRvAdapter: RecyclerView.Adapter<SelectImageRvAdapter.ImageHolde
         notifyDataSetChanged()
     }
 
-    class ImageHolder(itemView: View, val context: Context, val adapter: SelectImageRvAdapter): RecyclerView.ViewHolder(itemView) {
+    class ImageHolder(itemView: View, val context: Context, val adapter: SelectImageRvAdapter) :
+        RecyclerView.ViewHolder(itemView) {
         lateinit var tvTitle: TextView
         lateinit var image: ImageView
         lateinit var imEditImage: ImageButton
         lateinit var imDeleteImage: ImageButton
 
-        fun setData(bitMap: Bitmap){
+        fun setData(bitMap: Bitmap) {
             tvTitle = itemView.findViewById(R.id.tvTitle)
             image = itemView.findViewById(R.id.imageView)
             imEditImage = itemView.findViewById(R.id.imEditImage)
             imDeleteImage = itemView.findViewById(R.id.imDelete)
             imEditImage.setOnClickListener {
-                ImagePicker.getImages(context as EditAdsAct, 1, ImagePicker.REQUEST_CODE_SINGLE_IMAGES )
+                ImagePicker.getImages(context as EditAdsAct,
+                    1,
+                    ImagePicker.REQUEST_CODE_SINGLE_IMAGES)
                 context.editImagePos = adapterPosition
             }
             imDeleteImage.setOnClickListener {
@@ -68,12 +73,12 @@ class SelectImageRvAdapter: RecyclerView.Adapter<SelectImageRvAdapter.ImageHolde
 
         }
     }
-    fun updateAdapter (newList: List<Bitmap>, needClear : Boolean){
+
+    fun updateAdapter(newList: List<Bitmap>, needClear: Boolean) {
         if (needClear) mainArray.clear()
         mainArray.addAll(newList)
         notifyDataSetChanged()
     }
-
 
 
 }
