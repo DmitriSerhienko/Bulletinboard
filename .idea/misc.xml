@@ -3,6 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/38093/AndroidStudioProjects/Bulletinboard/app/src/main/res/drawable/edit_image_bg.xml" value="0.1605" />
+        <entry key="..\:/Users/38093/AndroidStudioProjects/Bulletinboard/app/src/main/res/drawable/ic_add_image.xml" value="0.1605" />
+        <entry key="..\:/Users/38093/AndroidStudioProjects/Bulletinboard/app/src/main/res/drawable/ic_delete_image.xml" value="0.1605" />
+        <entry key="..\:/Users/38093/AndroidStudioProjects/Bulletinboard/app/src/main/res/drawable/ic_drap.xml" value="0.1605" />
+        <entry key="..\:/Users/38093/AndroidStudioProjects/Bulletinboard/app/src/main/res/drawable/ic_edit.xml" value="0.1605" />
+        <entry key="..\:/Users/38093/AndroidStudioProjects/Bulletinboard/app/src/main/res/drawable/ic_new_ads.xml" value="0.1605" />
         <entry key="..\:/Users/38093/AndroidStudioProjects/Bulletinboard/app/src/main/res/layout/activity_edit_ads.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/38093/AndroidStudioProjects/Bulletinboard/app/src/main/res/layout/activity_main.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/38093/AndroidStudioProjects/Bulletinboard/app/src/main/res/layout/image_adapter_item.xml" value="0.25416666666666665" />
@@ -11,7 +17,7 @@
         <entry key="..\:/Users/38093/AndroidStudioProjects/Bulletinboard/app/src/main/res/layout/nav_header_main.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/38093/AndroidStudioProjects/Bulletinboard/app/src/main/res/layout/progress_dialog_layout.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/38093/AndroidStudioProjects/Bulletinboard/app/src/main/res/layout/sd_list_item.xml" value="0.25416666666666665" />
-        <entry key="..\:/Users/38093/AndroidStudioProjects/Bulletinboard/app/src/main/res/layout/select_image_frag_view.xml" value="0.4" />
+        <entry key="..\:/Users/38093/AndroidStudioProjects/Bulletinboard/app/src/main/res/layout/select_image_frag_view.xml" value="0.264" />
         <entry key="..\:/Users/38093/AndroidStudioProjects/Bulletinboard/app/src/main/res/layout/sing_dialog.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/38093/AndroidStudioProjects/Bulletinboard/app/src/main/res/layout/sp_list_item.xml" value="0.4" />
         <entry key="..\:/Users/38093/AndroidStudioProjects/Bulletinboard/app/src/main/res/layout/spinner_layout.xml" value="0.25416666666666665" />
