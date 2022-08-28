@@ -21,11 +21,11 @@ import com.fxn.pix.Pix
 import com.fxn.utility.PermUtil
 
 class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
-    private var chooseImageFragment: ImageListFragment? = null
+    var chooseImageFragment: ImageListFragment? = null
     lateinit var binding: ActivityEditAdsBinding
     private val dialog = DialogSpinnerHelper()
-    private var isImagesPermissionGranted = false
-    private lateinit var imageAdapter: ImageAdapter
+    var isImagesPermissionGranted = false
+    lateinit var imageAdapter: ImageAdapter
     var editImagePos = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,26 +56,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK && requestCode == ImagePicker.REQUEST_CODE_IMAGES) {
-            if (data != null) {
-                val returnValues = data.getStringArrayListExtra(Pix.IMAGE_RESULTS)
-                if (returnValues?.size!! > 1 && chooseImageFragment == null) {
-                    openChooseImageFrag(returnValues)
-                } else if (returnValues.size == 1 && chooseImageFragment == null) {
-                    //  imageAdapter.update(returnValues)
-                    val tempList = ImageManager.getImageSize(returnValues[0])
-                    Log.d("MyLog", "Width : ${tempList[0]}")
-                    Log.d("MyLog", "Height : ${tempList[1]}")
-                } else if (chooseImageFragment != null) {
-                    chooseImageFragment?.upDateAdapter(returnValues)
-                }
-            }
-        } else if (resultCode == RESULT_OK && requestCode == ImagePicker.REQUEST_CODE_SINGLE_IMAGES) {
-            if (data != null) {
-                val uris = data.getStringArrayListExtra(Pix.IMAGE_RESULTS)
-                chooseImageFragment?.setSingleImage(uris?.get(0)!!, editImagePos)
-            }
-        }
+        ImagePicker.showSelectedImages(requestCode, resultCode, data, this)
     }
 
     private fun init() {
@@ -120,7 +101,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         chooseImageFragment = null
     }
 
-    private fun openChooseImageFrag(newList: ArrayList<String>?) {
+    fun openChooseImageFrag(newList: ArrayList<String>?) {
         chooseImageFragment = ImageListFragment(this, newList)
         binding.scrollViewMain.visibility = View.GONE
         val fm = supportFragmentManager.beginTransaction()
