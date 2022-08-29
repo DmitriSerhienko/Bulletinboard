@@ -12,6 +12,7 @@ import com.DimasKach.bulletinboard.R
 import com.DimasKach.bulletinboard.activity.EditAdsAct
 import com.DimasKach.bulletinboard.databinding.SelectImageFragViewBinding
 import com.DimasKach.bulletinboard.utils.AdapterCallback
+import com.DimasKach.bulletinboard.utils.ImageManager
 import com.DimasKach.bulletinboard.utils.ImagePicker
 import com.DimasKach.bulletinboard.utils.ItemTouchMoveCallback
 
@@ -61,6 +62,7 @@ class SelectImageRvAdapter(val adapterCallback: AdapterCallback) : RecyclerView.
                 adapter.adapterCallback.onItemDelete()
             }
             viewBinding.tvTitle.text = context.resources.getStringArray(R.array.title_array)[adapterPosition]
+            ImageManager.chooseScaleType(viewBinding.imageView, bitMap)
             viewBinding.imageView.setImageBitmap(bitMap)
 
         }
