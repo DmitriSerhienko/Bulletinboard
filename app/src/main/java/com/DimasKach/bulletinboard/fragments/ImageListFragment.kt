@@ -27,33 +27,29 @@ import kotlinx.coroutines.launch
 
 class ImageListFragment(
     private val fragCloseInterface: FragmentCloseInterface,
-    private val newList: ArrayList<String>?
-) : Fragment(), AdapterCallback  {
-    lateinit var binding: ListImageFragmentBinding
+    private val newList: ArrayList<String>?,
+) : BaseSelectImageFrag(), AdapterCallback {
     val adapter = SelectImageRvAdapter(this)
     val dragCallback = ItemTouchMoveCallback(adapter)
     val touchHelper = ItemTouchHelper(dragCallback)
     private var job: Job? = null
     private var addItem: MenuItem? = null
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View? {
-        binding = ListImageFragmentBinding.inflate(inflater)
-        return binding.root
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpToolBar()
-        touchHelper.attachToRecyclerView(binding.rcViewSelectImage)
-        binding.rcViewSelectImage.layoutManager = LinearLayoutManager(activity)
-        binding.rcViewSelectImage.adapter = adapter
-        if (newList != null) resizeSelectedImage(newList, true)
+        binding.apply {
+
+            touchHelper.attachToRecyclerView(rcViewSelectImage)
+            rcViewSelectImage.layoutManager = LinearLayoutManager(activity)
+            rcViewSelectImage.adapter = adapter
+            if (newList != null) resizeSelectedImage(newList, true)
+        }
+
 
     }
+
     override fun onItemDelete() {
         addItem?.isVisible = true
     }
@@ -74,30 +70,33 @@ class ImageListFragment(
             val bitmapList = ImageManager.imageResize(newList)
             dialog.dismiss()
             adapter.updateAdapter(bitmapList, needClear)
-            if(adapter.mainArray.size > 2) addItem?.isVisible = false
+            if (adapter.mainArray.size > 2) addItem?.isVisible = false
         }
 
     }
 
     private fun setUpToolBar() {
-        binding.tb.inflateMenu(R.menu.menu_choose_image)
-        val deleteItem = binding.tb.menu.findItem(R.id.id_delete_image)
-        addItem = binding.tb.menu.findItem(R.id.id_add_image)
-        binding.tb.setNavigationOnClickListener {
-            activity?.supportFragmentManager?.beginTransaction()?.remove(this)?.commit()
-        }
 
-        deleteItem.setOnMenuItemClickListener {
-            adapter.updateAdapter(ArrayList(), true)
-            addItem?.isVisible = true
-            true
-        }
-        addItem?.setOnMenuItemClickListener {
-            val imageCount = ImagePicker.MAX_IMAGE_COUNT - adapter.mainArray.size
-            ImagePicker.getImages(activity as AppCompatActivity,
-                imageCount,
-                ImagePicker.REQUEST_CODE_IMAGES)
-            true
+        binding.apply {
+            tb.inflateMenu(R.menu.menu_choose_image)
+            val deleteItem = tb.menu.findItem(R.id.id_delete_image)
+            addItem = tb.menu.findItem(R.id.id_add_image)
+            tb.setNavigationOnClickListener {
+                activity?.supportFragmentManager?.beginTransaction()?.remove(this@ImageListFragment)?.commit()
+            }
+
+            deleteItem.setOnMenuItemClickListener {
+                adapter.updateAdapter(ArrayList(), true)
+                addItem?.isVisible = true
+                true
+            }
+            addItem?.setOnMenuItemClickListener {
+                val imageCount = ImagePicker.MAX_IMAGE_COUNT - adapter.mainArray.size
+                ImagePicker.getImages(activity as AppCompatActivity,
+                    imageCount,
+                    ImagePicker.REQUEST_CODE_IMAGES)
+                true
+            }
         }
 
     }
@@ -117,8 +116,6 @@ class ImageListFragment(
         }
 
     }
-
-
 
 
 }
