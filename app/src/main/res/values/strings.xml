@@ -35,7 +35,12 @@
     <string name="link_done">Email підключено до Вашого  Google аккаунту</string>
     <string name="enter_to_g">У Вас вже є аккаунт з даним Email</string>
     <!-- Edit Activity -->
-    <string name="select_country">Обрати країну</string>
+    <string name="select_country">*Обрати країну</string>
+    <string name="select_city">*Обрати місто</string>
     <string name="not_select_country">Не обрано країну</string>
-    <string name="select_city">Обрати місто</string>
+    <string name="country">Країна</string>
+    <string name="city">Місто</string>
+    <string name="index">Індекс</string>
+    <string name="tel">Телефон</string>
+    <string name="tel_number">Введіть номер телефону</string>
 </resources>
