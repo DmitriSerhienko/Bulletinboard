@@ -43,4 +43,13 @@
     <string name="index">Індекс</string>
     <string name="tel">Телефон</string>
     <string name="tel_number">Введіть номер телефону</string>
+    <string name="select_category">*Обрати категорію</string>
+    <string name="category">Категорія</string>
+    <string name="price">Ціна</string>
+    <string name="price_hint">Введіть ціну</string>
+    <string name="description">Опис товару</string>
+    <string name="description_hint">Введіть опис товару</string>
+    <string name="width_send">З доставкою</string>
+    <string name="send">Доставка</string>
+    <string name="publish">Опублікувати</string>
 </resources>
