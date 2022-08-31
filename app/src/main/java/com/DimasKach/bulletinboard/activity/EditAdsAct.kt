@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.Toast
 import com.DimasKach.bulletinboard.R
 import com.DimasKach.bulletinboard.adapters.ImageAdapter
+import com.DimasKach.bulletinboard.data.Ad
 import com.DimasKach.bulletinboard.database.DbManager
 import com.DimasKach.bulletinboard.databinding.ActivityEditAdsBinding
 import com.DimasKach.bulletinboard.dialogs.DialogSpinnerHelper
@@ -28,6 +29,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     var isImagesPermissionGranted = false
     lateinit var imageAdapter: ImageAdapter
     var editImagePos = 0
+    private val dbManager = DbManager()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,9 +104,27 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     }
 
     fun onClickPublish(view: View){
-        val dbManager = DbManager()
-        dbManager.publishAd()
+        dbManager.publishAd(fillAd())
     }
+
+    private fun fillAd(): Ad{
+        val ad: Ad
+        binding.apply {
+            ad = Ad(
+                tvCountry.text.toString(),
+                tvCity.text.toString(),
+                editTel.text.toString(),
+                editIndex.text.toString(),
+                checkBoxWithSend.isChecked.toString(),
+                tvCat.text.toString(),
+                edPrice.text.toString(),
+                editDescription.text.toString(),
+                dbManager.db.push().key
+            )
+        }
+        return ad
+    }
+
 
     override fun onFragClose(list: ArrayList<Bitmap>) {
         binding.scrollViewMain.visibility = View.VISIBLE
