@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.Toast
 import com.DimasKach.bulletinboard.R
 import com.DimasKach.bulletinboard.adapters.ImageAdapter
+import com.DimasKach.bulletinboard.database.DbManager
 import com.DimasKach.bulletinboard.databinding.ActivityEditAdsBinding
 import com.DimasKach.bulletinboard.dialogs.DialogSpinnerHelper
 import com.DimasKach.bulletinboard.fragments.FragmentCloseInterface
@@ -98,6 +99,11 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
             chooseImageFragment?.upDateAdapterFromEdit(imageAdapter.mainArray)
         }
 
+    }
+
+    fun onClickPublish(view: View){
+        val dbManager = DbManager()
+        dbManager.publishAd()
     }
 
     override fun onFragClose(list: ArrayList<Bitmap>) {

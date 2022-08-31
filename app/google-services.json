@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "385367408819",
+    "firebase_url": "https://bulettinboard-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "bulettinboard",
     "storage_bucket": "bulettinboard.appspot.com"
   },
