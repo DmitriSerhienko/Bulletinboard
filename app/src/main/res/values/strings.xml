@@ -54,4 +54,6 @@
     <string name="width_send">З доставкою</string>
     <string name="send">Доставка</string>
     <string name="publish">Опублікувати</string>
+    <!-- EAd list Item-->
+    <string name="price_desc">Ціна:</string>
 </resources>
