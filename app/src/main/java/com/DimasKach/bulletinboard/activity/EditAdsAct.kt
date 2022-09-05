@@ -29,7 +29,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     var isImagesPermissionGranted = false
     lateinit var imageAdapter: ImageAdapter
     var editImagePos = 0
-    private val dbManager = DbManager()
+    private val dbManager = DbManager(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -117,6 +117,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
                 editIndex.text.toString(),
                 checkBoxWithSend.isChecked.toString(),
                 tvCat.text.toString(),
+                edTitle.text.toString(),
                 edPrice.text.toString(),
                 editDescription.text.toString(),
                 dbManager.db.push().key

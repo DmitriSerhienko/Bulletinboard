@@ -296,6 +296,38 @@
                         android:textStyle="normal" />
 
                     <LinearLayout
+                        android:id="@+id/divider05"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:background="@color/green_main"
+                        android:orientation="horizontal">
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:onClick="onClickSelectCountry"
+                        android:padding="10dp"
+                        android:text="@string/title"
+                        android:textColor="@color/green_main"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/edTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:ems="10"
+                        android:hint="@string/title_hint"
+                        android:inputType="textPersonName"
+                        android:padding="10dp"
+                        android:textColorHint="@color/grey_dark" />
+
+                    <LinearLayout
                         android:id="@+id/divider01"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
@@ -337,6 +369,16 @@
                         android:orientation="horizontal">
 
                     </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvDesc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:onClick="onClickSelectCountry"
+                        android:padding="10dp"
+                        android:text="@string/description"
+                        android:textColor="@color/green_main"
+                        android:textStyle="bold" />
 
                     <EditText
                         android:id="@+id/editDescription"

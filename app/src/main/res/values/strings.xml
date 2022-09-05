@@ -46,6 +46,8 @@
     <string name="select_category">*Обрати категорію</string>
     <string name="category">Категорія</string>
     <string name="price">Ціна</string>
+    <string name="title">Заголовок</string>
+    <string name="title_hint">Введіть заголовок</string>
     <string name="price_hint">Введіть ціну</string>
     <string name="description">Опис товару</string>
     <string name="description_hint">Введіть опис товару</string>

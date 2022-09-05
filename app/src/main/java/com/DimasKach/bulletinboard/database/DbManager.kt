@@ -8,7 +8,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
-class DbManager {
+class DbManager(val readDataCallback : ReadDataCallback?) {
     val db = Firebase.database("https://bulettinboard-default-rtdb.europe-west1.firebasedatabase.app/").getReference("main")
     val auth = Firebase.auth
 
@@ -26,6 +26,7 @@ class DbManager {
                     if(ad != null) adArray.add(ad)
 
                 }
+                readDataCallback?.readData(adArray)
             }
 
             override fun onCancelled(error: DatabaseError) {

@@ -5,13 +5,18 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.DimasKach.bulletinboard.activity.EditAdsAct
+import com.DimasKach.bulletinboard.adapters.AdsRcAdapter
+import com.DimasKach.bulletinboard.data.Ad
 import com.DimasKach.bulletinboard.database.DbManager
+import com.DimasKach.bulletinboard.database.ReadDataCallback
 import com.DimasKach.bulletinboard.databinding.ActivityMainBinding
 import com.DimasKach.bulletinboard.dialoghelper.DialogConst
 import com.DimasKach.bulletinboard.dialoghelper.DialogHelper
@@ -19,16 +24,18 @@ import com.DimasKach.bulletinboard.dialoghelper.GoogleAccConst
 import com.fxn.pix.Pix
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
+import com.google.android.material.navigation.NavigationView
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
-class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, ReadDataCallback {
     private lateinit var binding: ActivityMainBinding
     private lateinit var tvAccount: TextView
     private val dialogHelper = DialogHelper(this)
     val mAuth = FirebaseAuth.getInstance()
-    val dbManager = DbManager()
+    val dbManager = DbManager(this)
+    val adapter = AdsRcAdapter()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,6 +44,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         init()
+        initRecyclerView()
         dbManager.readDataFromDb()
     }
 
@@ -88,6 +96,13 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         tvAccount = binding.navView.getHeaderView(0).findViewById(R.id.tvAccountEmail)
     }
 
+    private fun initRecyclerView(){
+        binding.apply{
+            mainContent.rcView.layoutManager = LinearLayoutManager(this@MainActivity)
+            mainContent.rcView.adapter = adapter
+        }
+    }
+
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.id_my_ads -> {
@@ -127,6 +142,10 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         } else {
             user.email
         }
+    }
+
+    override fun readData(list: List<Ad>) {
+        adapter.upDateAdapter(list)
     }
 
 }
