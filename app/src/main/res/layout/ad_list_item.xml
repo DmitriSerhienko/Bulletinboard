@@ -100,7 +100,6 @@
                     android:background="@color/yellow"
                     android:fontFamily="sans-serif-condensed"
                     android:gravity="right"
-                    android:paddingStart="10dp"
                     android:paddingTop="5dp"
                     android:paddingEnd="10dp"
                     android:paddingBottom="5dp"
