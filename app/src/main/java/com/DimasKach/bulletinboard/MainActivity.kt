@@ -28,14 +28,16 @@ import com.google.android.material.navigation.NavigationView
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, ReadDataCallback {
     private lateinit var binding: ActivityMainBinding
     private lateinit var tvAccount: TextView
     private val dialogHelper = DialogHelper(this)
-    val mAuth = FirebaseAuth.getInstance()
+    val mAuth = Firebase.auth
     val dbManager = DbManager(this)
-    val adapter = AdsRcAdapter()
+    val adapter = AdsRcAdapter(mAuth)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
