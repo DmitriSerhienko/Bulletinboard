@@ -1,4 +1,4 @@
-package com.DimasKach.bulletinboard.data
+package com.DimasKach.bulletinboard.model
 
 data class Ad(
     val country : String? = null,

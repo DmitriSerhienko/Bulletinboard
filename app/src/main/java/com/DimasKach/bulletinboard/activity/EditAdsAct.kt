@@ -10,8 +10,8 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import com.DimasKach.bulletinboard.R
 import com.DimasKach.bulletinboard.adapters.ImageAdapter
-import com.DimasKach.bulletinboard.data.Ad
-import com.DimasKach.bulletinboard.database.DbManager
+import com.DimasKach.bulletinboard.model.Ad
+import com.DimasKach.bulletinboard.model.DbManager
 import com.DimasKach.bulletinboard.databinding.ActivityEditAdsBinding
 import com.DimasKach.bulletinboard.dialogs.DialogSpinnerHelper
 import com.DimasKach.bulletinboard.fragments.FragmentCloseInterface
@@ -27,7 +27,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     var isImagesPermissionGranted = false
     lateinit var imageAdapter: ImageAdapter
     var editImagePos = 0
-    private val dbManager = DbManager(null)
+    private val dbManager = DbManager()
     var launcherMultiselectImage: ActivityResultLauncher<Intent>? = null
     var launcherSingleSelectImage: ActivityResultLauncher<Intent>? = null
 

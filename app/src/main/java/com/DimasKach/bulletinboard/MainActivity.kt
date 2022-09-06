@@ -5,39 +5,35 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.DimasKach.bulletinboard.activity.EditAdsAct
 import com.DimasKach.bulletinboard.adapters.AdsRcAdapter
-import com.DimasKach.bulletinboard.data.Ad
-import com.DimasKach.bulletinboard.database.DbManager
-import com.DimasKach.bulletinboard.database.ReadDataCallback
 import com.DimasKach.bulletinboard.databinding.ActivityMainBinding
 import com.DimasKach.bulletinboard.dialoghelper.DialogConst
 import com.DimasKach.bulletinboard.dialoghelper.DialogHelper
 import com.DimasKach.bulletinboard.dialoghelper.GoogleAccConst
-import com.fxn.pix.Pix
+import com.DimasKach.bulletinboard.viewmodel.FirebaseViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, ReadDataCallback {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener/*, ReadDataCallback - используем если идем без архитектуры  MVVM*/ {
     private lateinit var binding: ActivityMainBinding
     private lateinit var tvAccount: TextView
     private val dialogHelper = DialogHelper(this)
     val mAuth = Firebase.auth
-    val dbManager = DbManager(this)
+//    val dbManager = DbManager(this) - используем если идем без архитектуры  MVVM
     val adapter = AdsRcAdapter(mAuth)
+    private val firebaseViewModel: FirebaseViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,7 +43,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(binding.root)
         init()
         initRecyclerView()
-        dbManager.readDataFromDb()
+        initViewModel()
+        firebaseViewModel.loadAllAds()
+//        dbManager.readDataFromDb() - используем если идем без архитектуры  MVVM
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -84,6 +82,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         uiUpdate(mAuth.currentUser)
     }
 
+    private fun initViewModel (){
+        firebaseViewModel.liveAdsData.observe(this, {
+            adapter.upDateAdapter(it)
+        })
+
+    }
     private fun init() {
         setSupportActionBar(binding.mainContent.toolbar)
         val toggle =
@@ -146,8 +150,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    override fun readData(list: List<Ad>) {
-        adapter.upDateAdapter(list)
-    }
+//    override fun readData(list: List<Ad>) {  - используем если идем без архитектуры  MVVM
+//        adapter.upDateAdapter(list)
+//    }
 
 }
