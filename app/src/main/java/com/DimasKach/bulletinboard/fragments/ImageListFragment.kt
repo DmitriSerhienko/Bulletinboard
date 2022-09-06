@@ -45,7 +45,6 @@ class ImageListFragment(
         super.onViewCreated(view, savedInstanceState)
         setUpToolBar()
         binding.apply {
-
             touchHelper.attachToRecyclerView(rcViewSelectImage)
             rcViewSelectImage.layoutManager = LinearLayoutManager(activity)
             rcViewSelectImage.adapter = adapter
@@ -83,7 +82,6 @@ class ImageListFragment(
             adapter.updateAdapter(bitmapList, needClear)
             if (adapter.mainArray.size > 2) addItem?.isVisible = false
         }
-
     }
 
     private fun setUpToolBar() {
@@ -95,7 +93,6 @@ class ImageListFragment(
             tb.setNavigationOnClickListener {
                 showInterAd()
             }
-
             deleteItem.setOnMenuItemClickListener {
                 adapter.updateAdapter(ArrayList(), true)
                 addItem?.isVisible = true
@@ -107,7 +104,6 @@ class ImageListFragment(
                 true
             }
         }
-
     }
 
     fun upDateAdapter(newList: ArrayList<String>) {
@@ -123,8 +119,6 @@ class ImageListFragment(
             adapter.mainArray[pos] = bitmapList[0]
             adapter.notifyDataSetChanged()
         }
-
     }
-
 
 }

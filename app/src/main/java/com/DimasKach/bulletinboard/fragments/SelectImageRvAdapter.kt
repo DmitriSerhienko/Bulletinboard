@@ -62,7 +62,6 @@ class SelectImageRvAdapter(val adapterCallback: AdapterCallback) : RecyclerView.
             viewBinding.tvTitle.text = context.resources.getStringArray(R.array.title_array)[adapterPosition]
             ImageManager.chooseScaleType(viewBinding.imageView, bitMap)
             viewBinding.imageView.setImageBitmap(bitMap)
-
         }
     }
 
