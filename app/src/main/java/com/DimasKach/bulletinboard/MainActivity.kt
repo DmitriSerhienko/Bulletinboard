@@ -103,13 +103,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     startActivity(i)
                 }
                 R.id.id_my_ads -> {
-                    Toast.makeText(this@MainActivity, "MyaAs", Toast.LENGTH_LONG).show()
+                    firebaseViewModel.loadMyAds()
                 }
                 R.id.id_favs -> {
                     Toast.makeText(this@MainActivity, "Favourite", Toast.LENGTH_LONG).show()
                 }
                 R.id.id_home -> {
-                    Toast.makeText(this@MainActivity, "Home", Toast.LENGTH_LONG).show()
+                    firebaseViewModel.loadAllAds()
                 }
             }
             true
