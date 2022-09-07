@@ -27,10 +27,13 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     private val dialog = DialogSpinnerHelper()
     var isImagesPermissionGranted = false
     lateinit var imageAdapter: ImageAdapter
+    private var isEditState = false
+    private var ad: Ad? = null
     var editImagePos = 0
     private val dbManager = DbManager()
     var launcherMultiselectImage: ActivityResultLauncher<Intent>? = null
     var launcherSingleSelectImage: ActivityResultLauncher<Intent>? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,8 +44,10 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     }
 
     private fun checkEditState(){
-        if(isEditState()){
-            fillViews(intent.getSerializableExtra(MainActivity.ADS_DATA) as Ad)
+        isEditState = isEditState()
+        if(isEditState){
+            ad = intent.getSerializableExtra(MainActivity.ADS_DATA) as Ad
+            if (ad!= null) fillViews(ad!!)
         }
     }
 
@@ -127,7 +132,20 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     }
 
     fun onClickPublish(view: View){
-        dbManager.publishAd(fillAd())
+        val adTemp = fillAd()
+        if (isEditState) {
+            dbManager.publishAd(adTemp.copy(key = ad?.key), onPublishFinish() )
+        } else {
+            dbManager.publishAd(adTemp, onPublishFinish())
+        }
+    }
+
+    private fun onPublishFinish(): DbManager.FinishWorkListener{
+        return  object: DbManager.FinishWorkListener{
+            override fun onFinish() {
+                finish()
+            }
+        }
     }
 
     private fun fillAd(): Ad{

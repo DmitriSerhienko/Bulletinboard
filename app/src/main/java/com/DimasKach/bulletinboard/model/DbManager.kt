@@ -12,8 +12,12 @@ class DbManager(/*val readDataCallback : ReadDataCallback? - используе�
     val db = Firebase.database("https://bulettinboard-default-rtdb.europe-west1.firebasedatabase.app/").getReference("main")
     val auth = Firebase.auth
 
-    fun publishAd(ad: Ad){
-        if(auth.uid != null ) db.child(ad.key ?: "empty").child(auth.uid!!).child("ad").setValue(ad)
+    fun publishAd(ad: Ad, finishListener: FinishWorkListener){
+        if(auth.uid != null ) db.child(ad.key ?: "empty")
+            .child(auth.uid!!).child("ad")
+            .setValue(ad).addOnCompleteListener {
+                finishListener.onFinish()
+            }
     }
 
     fun getMyAds(readDataCallback : ReadDataCallback?){
@@ -47,5 +51,8 @@ class DbManager(/*val readDataCallback : ReadDataCallback? - используе�
     }
     interface ReadDataCallback {
         fun readData(list: ArrayList<Ad>)
+    }
+    interface  FinishWorkListener{
+        fun onFinish()
     }
 }
