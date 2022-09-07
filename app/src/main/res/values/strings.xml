@@ -5,6 +5,8 @@
     <!-- Menu Drawer -->
     <string name="ad_cat1">Оголошення</string>
     <string name="ad_my_ads">Мої оголошення</string>
+    <string name="ad_fav">Обране</string>
+    <string name="ad_def">Різне</string>
     <string name="ad_car">Авто</string>
     <string name="ad_pc">Компьютери</string>
     <string name="ad_phone">Смартфони</string>

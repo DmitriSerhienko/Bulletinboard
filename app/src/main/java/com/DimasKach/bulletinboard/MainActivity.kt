@@ -32,9 +32,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val dialogHelper = DialogHelper(this)
     val mAuth = Firebase.auth
 //    val dbManager = DbManager(this) - используем если идем без архитектуры  MVVM
-    val adapter = AdsRcAdapter(mAuth)
+    val adapter = AdsRcAdapter(this)
     private val firebaseViewModel: FirebaseViewModel by viewModels()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,12 +103,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
                 R.id.id_my_ads -> {
                     firebaseViewModel.loadMyAds()
+                    mainContent.toolbar.title = getString(R.string.ad_my_ads)
                 }
                 R.id.id_favs -> {
                     Toast.makeText(this@MainActivity, "Favourite", Toast.LENGTH_LONG).show()
                 }
                 R.id.id_home -> {
                     firebaseViewModel.loadAllAds()
+                    mainContent.toolbar.title = getString(R.string.ad_def)
                 }
             }
             true
@@ -167,5 +168,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 //    override fun readData(list: List<Ad>) {  - используем если идем без архитектуры  MVVM
 //        adapter.upDateAdapter(list)
 //    }
+    companion object{
+        const val EDIT_STATE = "edit_state"
+        const val ADS_DATA = "ads_data"
+    }
 
 }

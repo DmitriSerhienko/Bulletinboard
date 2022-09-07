@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
+import com.DimasKach.bulletinboard.MainActivity
 import com.DimasKach.bulletinboard.R
 import com.DimasKach.bulletinboard.adapters.ImageAdapter
 import com.DimasKach.bulletinboard.model.Ad
@@ -36,6 +37,29 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         binding = ActivityEditAdsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         init()
+        checkEditState()
+    }
+
+    private fun checkEditState(){
+        if(isEditState()){
+            fillViews(intent.getSerializableExtra(MainActivity.ADS_DATA) as Ad)
+        }
+    }
+
+    private fun isEditState(): Boolean{
+        return intent.getBooleanExtra(MainActivity.EDIT_STATE, false)
+
+    }
+    private fun fillViews(ad: Ad) = with(binding){
+        tvCountry.text = ad.country
+        tvCity.text = ad.city
+        editTel.setText(ad.tel)
+        editIndex.setText(ad.index)
+        checkBoxWithSend.isChecked = ad.withSent.toBoolean()
+        tvCat.text = ad.category
+        edTitle.setText(ad.title)
+        edPrice.setText(ad.price)
+        editDescription.setText(ad.description)
     }
 
     override fun onRequestPermissionsResult(
