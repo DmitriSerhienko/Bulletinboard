@@ -41,6 +41,9 @@ class AdsRcAdapter(val act: MainActivity ): RecyclerView.Adapter<AdsRcAdapter.Ad
             tvPrice.text = ad.price
             showEditPanel(isOwner(ad))
             ibEditAd.setOnClickListener(onClickEdit(ad))
+            ibDeleteAd.setOnClickListener{
+                act.onDeleteItem(ad)
+            }
         }
         private fun onClickEdit(ad: Ad): View.OnClickListener{
             return View.OnClickListener {
@@ -64,5 +67,9 @@ class AdsRcAdapter(val act: MainActivity ): RecyclerView.Adapter<AdsRcAdapter.Ad
             }
         }
     }
+    interface DeleteItemListener{
+        fun onDeleteItem(ad: Ad)
+    }
+
 
 }

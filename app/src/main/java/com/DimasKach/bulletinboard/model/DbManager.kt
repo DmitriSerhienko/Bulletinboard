@@ -29,6 +29,13 @@ class DbManager(/*val readDataCallback : ReadDataCallback? - используе�
         readDataFromDb(query, readDataCallback)
     }
 
+    fun deleteAd(ad: Ad, listener: FinishWorkListener){
+        if(ad.key == null || ad.uid == null) return
+        db.child(ad.key).child(ad.uid).removeValue().addOnCompleteListener {
+            if(it.isSuccessful) listener.onFinish()
+        }
+    }
+
 
     private fun readDataFromDb(query: Query, readDataCallback : ReadDataCallback?){
         query.addListenerForSingleValueEvent(object: ValueEventListener{
@@ -38,17 +45,16 @@ class DbManager(/*val readDataCallback : ReadDataCallback? - используе�
                 for (item  in snapshot.children){
                     val ad = item.children.iterator().next().child("ad").getValue(Ad::class.java)
                     if(ad != null) adArray.add(ad)
-
                 }
                 readDataCallback?.readData(adArray)
             }
-
             override fun onCancelled(error: DatabaseError) {
-
             }
-
         })
     }
+
+
+
     interface ReadDataCallback {
         fun readData(list: ArrayList<Ad>)
     }
