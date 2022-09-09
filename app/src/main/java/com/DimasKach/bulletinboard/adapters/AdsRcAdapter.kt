@@ -41,6 +41,7 @@ class AdsRcAdapter(val act: MainActivity) : RecyclerView.Adapter<AdsRcAdapter.Ad
             tvDescription.text = ad.description
             tvTitle.text = ad.title
             tvPrice.text = ad.price
+            tvViewCounter.text = ad.viewsCounter
             showEditPanel(isOwner(ad))
             itemView.setOnClickListener {
                 act.onAdViewed(ad)

@@ -50,8 +50,17 @@ class DbManager(/*val readDataCallback : ReadDataCallback? - используе�
                 val adArray = ArrayList<Ad>()
 
                 for (item  in snapshot.children){
-                    val ad = item.children.iterator().next().child(AD_NODE).getValue(Ad::class.java)
-                    if(ad != null) adArray.add(ad)
+                    var ad: Ad?  = null
+                    item.children.forEach {
+                        if(ad == null) ad = it.child(AD_NODE).getValue(Ad::class.java)
+                    }
+                    val infoItem = item.child(INFO_NODE).getValue(InfoItem::class.java)
+
+                    ad?.viewsCounter = infoItem?.viewsCounter ?: "0"
+                    ad?.emailsCounter = infoItem?.emailsCounter ?: "0"
+                    ad?.callsCounter = infoItem?.callsCounter ?: "0"
+                    if(ad != null) adArray.add(ad!!)
+
                 }
                 readDataCallback?.readData(adArray)
             }

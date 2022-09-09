@@ -15,7 +15,7 @@ data class Ad(
     val key: String? = null,
     val uid: String? = null,
 
-    val viewsCounter: String? = "0",
-    val emailsCounter: String? = "0",
-    val callsCounter: String? = "0"
+    var viewsCounter: String? = "0",
+    var emailsCounter: String? = "0",
+    var callsCounter: String? = "0"
 ): Serializable
