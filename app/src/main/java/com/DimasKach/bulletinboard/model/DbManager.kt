@@ -9,15 +9,22 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 class DbManager(/*val readDataCallback : ReadDataCallback? - используем если идем без архитектуры  MVVM */) {
-    val db = Firebase.database("https://bulettinboard-default-rtdb.europe-west1.firebasedatabase.app/").getReference("main")
+    val db = Firebase.database("https://bulettinboard-default-rtdb.europe-west1.firebasedatabase.app/").getReference(MAIN_NODE)
     val auth = Firebase.auth
 
     fun publishAd(ad: Ad, finishListener: FinishWorkListener){
         if(auth.uid != null ) db.child(ad.key ?: "empty")
-            .child(auth.uid!!).child("ad")
+            .child(auth.uid!!).child(AD_NODE)
             .setValue(ad).addOnCompleteListener {
                 finishListener.onFinish()
             }
+    }
+    fun adViewed(ad: Ad){
+        var counter = ad.viewsCounter!!.toInt()
+        counter++
+
+        if(auth.uid != null ) db.child(ad.key ?: "empty")
+            .child(INFO_NODE).setValue(InfoItem(counter.toString(), ad.emailsCounter, ad.callsCounter))
     }
 
     fun getMyAds(readDataCallback : ReadDataCallback?){
@@ -43,7 +50,7 @@ class DbManager(/*val readDataCallback : ReadDataCallback? - используе�
                 val adArray = ArrayList<Ad>()
 
                 for (item  in snapshot.children){
-                    val ad = item.children.iterator().next().child("ad").getValue(Ad::class.java)
+                    val ad = item.children.iterator().next().child(AD_NODE).getValue(Ad::class.java)
                     if(ad != null) adArray.add(ad)
                 }
                 readDataCallback?.readData(adArray)
@@ -60,5 +67,10 @@ class DbManager(/*val readDataCallback : ReadDataCallback? - используе�
     }
     interface  FinishWorkListener{
         fun onFinish()
+    }
+    companion object{
+        const val AD_NODE = "ad"
+        const val INFO_NODE = "info"
+        const val MAIN_NODE = "main"
     }
 }
