@@ -96,10 +96,15 @@ class DbManager(/*val readDataCallback : ReadDataCallback? - используе�
                         if (ad == null) ad = it.child(AD_NODE).getValue(Ad::class.java)
                     }
                     val infoItem = item.child(INFO_NODE).getValue(InfoItem::class.java)
+                    val favCounter = item.child(FAV_NODE).childrenCount
+                    val isFav = auth.uid?.let { item.child(FAV_NODE).child(it).getValue(String::class.java) }
+                    ad?.isFav = isFav != null
+                    ad?.favCounter = favCounter.toString()
 
                     ad?.viewsCounter = infoItem?.viewsCounter ?: "0"
                     ad?.emailsCounter = infoItem?.emailsCounter ?: "0"
                     ad?.callsCounter = infoItem?.callsCounter ?: "0"
+
                     if (ad != null) adArray.add(ad!!)
 
                 }

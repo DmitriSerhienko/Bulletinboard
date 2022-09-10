@@ -162,6 +162,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
                 edPrice.text.toString(),
                 editDescription.text.toString(),
                 dbManager.db.push().key,
+                "0",
                 dbManager.auth.uid
             )
         }
