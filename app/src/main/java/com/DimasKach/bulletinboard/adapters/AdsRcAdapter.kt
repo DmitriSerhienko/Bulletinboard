@@ -44,7 +44,6 @@ class AdsRcAdapter(val act: MainActivity) : RecyclerView.Adapter<AdsRcAdapter.Ad
             tvPrice.text = ad.price
             tvViewCounter.text = ad.viewsCounter
             tvFavCounter.text = ad.favCounter
-
             if(ad.isFav) {
                 ibFav.setImageResource(R.drawable.ic_fav_pressed)
             } else{
@@ -91,6 +90,4 @@ class AdsRcAdapter(val act: MainActivity) : RecyclerView.Adapter<AdsRcAdapter.Ad
         fun onAdViewed(ad: Ad)
         fun onFavClicked(ad: Ad)
     }
-
-
 }

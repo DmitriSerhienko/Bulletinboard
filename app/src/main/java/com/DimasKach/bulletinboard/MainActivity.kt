@@ -52,7 +52,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onResume() {
         super.onResume()
         binding.mainContent.bNavView.selectedItemId = R.id.id_home
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -63,7 +62,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 if(account != null) {
                     dialogHelper.accHelper.signInFirebaseWithGoogle(account.idToken!!)
                 }
-
             } catch(e:ApiException){
                 Log.d("MyLog", "Api error: ${e.message}")
             }
@@ -77,11 +75,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun initViewModel (){
-        firebaseViewModel.liveAdsData.observe(this, {
+        firebaseViewModel.liveAdsData.observe(this) {
             adapter.upDateAdapter(it)
-            binding.mainContent.tvEmpty.visibility = if(it.isEmpty()) View.VISIBLE else View.GONE
-        })
-
+            binding.mainContent.tvEmpty.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
+        }
     }
     private fun init() {
         setSupportActionBar(binding.mainContent.toolbar)

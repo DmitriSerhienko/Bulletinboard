@@ -183,6 +183,4 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         fm.replace(R.id.place_holder, chooseImageFragment!!)
         fm.commit()
     }
-
-
 }
