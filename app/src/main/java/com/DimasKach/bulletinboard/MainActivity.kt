@@ -12,6 +12,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.DimasKach.bulletinboard.accounthelper.AccountHelper
 import com.DimasKach.bulletinboard.activity.EditAdsAct
 import com.DimasKach.bulletinboard.adapters.AdsRcAdapter
 import com.DimasKach.bulletinboard.databinding.ActivityMainBinding
@@ -27,12 +28,14 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, AdsRcAdapter.Listener/*, ReadDataCallback - используем если идем без архитектуры  MVVM*/ {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
+    AdsRcAdapter.Listener/*, ReadDataCallback - используем если идем без архитектуры  MVVM*/ {
     private lateinit var binding: ActivityMainBinding
     private lateinit var tvAccount: TextView
     private val dialogHelper = DialogHelper(this)
     val mAuth = Firebase.auth
-//    val dbManager = DbManager(this) - используем если идем без архитектуры  MVVM
+
+    //    val dbManager = DbManager(this) - используем если идем без архитектуры  MVVM
     val adapter = AdsRcAdapter(this)
     private val firebaseViewModel: FirebaseViewModel by viewModels()
 
@@ -55,14 +58,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(requestCode == GoogleAccConst.GOOGLE_SIGN_IN_REQUEST_CODE) {
+        if (requestCode == GoogleAccConst.GOOGLE_SIGN_IN_REQUEST_CODE) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
                 val account = task.getResult(ApiException::class.java)
-                if(account != null) {
+                if (account != null) {
                     dialogHelper.accHelper.signInFirebaseWithGoogle(account.idToken!!)
                 }
-            } catch(e:ApiException){
+            } catch (e: ApiException) {
                 Log.d("MyLog", "Api error: ${e.message}")
             }
         }
@@ -74,12 +77,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         uiUpdate(mAuth.currentUser)
     }
 
-    private fun initViewModel (){
+    private fun initViewModel() {
         firebaseViewModel.liveAdsData.observe(this) {
             adapter.upDateAdapter(it)
             binding.mainContent.tvEmpty.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
         }
     }
+
     private fun init() {
         setSupportActionBar(binding.mainContent.toolbar)
         val toggle =
@@ -93,11 +97,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         binding.navView.setNavigationItemSelectedListener(this)
         tvAccount = binding.navView.getHeaderView(0).findViewById(R.id.tvAccountEmail)
     }
-    private fun bottomMenuOnClick() = with(binding){
+
+    private fun bottomMenuOnClick() = with(binding) {
         mainContent.bNavView.setOnItemSelectedListener { item ->
-            when (item.itemId){
+            when (item.itemId) {
                 R.id.id_new_ad -> {
-                    val i = Intent(this@MainActivity,EditAdsAct::class.java)
+                    val i = Intent(this@MainActivity, EditAdsAct::class.java)
                     startActivity(i)
                 }
                 R.id.id_my_ads -> {
@@ -117,8 +122,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    private fun initRecyclerView(){
-        binding.apply{
+    private fun initRecyclerView() {
+        binding.apply {
             mainContent.rcView.layoutManager = LinearLayoutManager(this@MainActivity)
             mainContent.rcView.adapter = adapter
         }
@@ -148,6 +153,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 dialogHelper.createSingDialog(DialogConst.SING_IN_STATE)
             }
             R.id.ac_sing_out -> {
+                if (mAuth.currentUser?.isAnonymous == true) {
+                    binding.drawerLayout.closeDrawer(GravityCompat.START)
+                    return true
+                }
                 uiUpdate(null)
                 mAuth.signOut()
                 dialogHelper.accHelper.signOutG()
@@ -157,18 +166,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    fun uiUpdate (user: FirebaseUser?){
-        tvAccount.text = if (user == null){
-            resources.getString(R.string.not_reg)
-        } else {
-            user.email
+    fun uiUpdate(user: FirebaseUser?) {
+        if (user == null) {
+            dialogHelper.accHelper.signInAnonymously(object : AccountHelper.Listener {
+                override fun onComplete() {
+                    tvAccount.setText(R.string.anonymous_enter)
+                }
+            })
+        } else if (user.isAnonymous) {
+            tvAccount.setText(R.string.anonymous_enter)
+        } else if(!user.isAnonymous){
+            tvAccount.text = user.email
         }
     }
 
-//    override fun readData(list: List<Ad>) {  - используем если идем без архитектуры  MVVM
+    //    override fun readData(list: List<Ad>) {  - используем если идем без архитектуры  MVVM
 //        adapter.upDateAdapter(list)
 //    }
-    companion object{
+    companion object {
         const val EDIT_STATE = "edit_state"
         const val ADS_DATA = "ads_data"
     }

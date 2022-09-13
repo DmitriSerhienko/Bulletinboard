@@ -29,6 +29,7 @@
     <string name="sing_up_action">Зареєструватись</string>
     <string name="sing_up_error">Не вдалось зареєструватись</string>
     <string name="sing_in_error">Не вдалось увійти</string>
+    <string name="anonymous_enter">Гість</string>
     <string name="sing_in_action">Увійти</string>
     <string name="forget_password">Забули пароль</string>
     <string name="send_verification_error">Не вдалось надіслати email для підтверждення!</string>

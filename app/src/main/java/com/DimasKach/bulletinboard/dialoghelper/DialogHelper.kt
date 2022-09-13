@@ -8,8 +8,8 @@ import com.DimasKach.bulletinboard.R
 import com.DimasKach.bulletinboard.accounthelper.AccountHelper
 import com.DimasKach.bulletinboard.databinding.SingDialogBinding
 
-class DialogHelper(act: MainActivity) {
-    private val activ = act
+class DialogHelper(val activ: MainActivity) {
+
     val accHelper = AccountHelper(activ)
 
     fun createSingDialog(index: Int) {

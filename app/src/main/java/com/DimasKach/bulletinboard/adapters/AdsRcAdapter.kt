@@ -54,7 +54,7 @@ class AdsRcAdapter(val act: MainActivity) : RecyclerView.Adapter<AdsRcAdapter.Ad
                 act.onAdViewed(ad)
             }
             ibFav.setOnClickListener {
-                act.onFavClicked(ad)
+                if(act.mAuth.currentUser?.isAnonymous == false) act.onFavClicked(ad)
             }
             ibEditAd.setOnClickListener(onClickEdit(ad))
             ibDeleteAd.setOnClickListener {

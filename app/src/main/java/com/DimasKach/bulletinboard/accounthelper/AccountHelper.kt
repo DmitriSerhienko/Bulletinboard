@@ -11,8 +11,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.*
 
-class AccountHelper(act: MainActivity) {
-    private val activ = act
+class AccountHelper(val activ: MainActivity) {
 
     private lateinit var signInClient: GoogleSignInClient
 
@@ -135,14 +134,19 @@ class AccountHelper(act: MainActivity) {
 
     fun signInFirebaseWithGoogle(token: String) {
         val credential = GoogleAuthProvider.getCredential(token, null)
-        activ.mAuth.signInWithCredential(credential).addOnCompleteListener { task ->
+        activ.mAuth.currentUser?.delete()?.addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                Toast.makeText(activ, "Вхід виконано", Toast.LENGTH_LONG).show()
-                activ.uiUpdate(task.result?.user)
-            } else {
-                Log.d("MyLog", "Google Sign In Exception : ${task.exception}")
+                activ.mAuth.signInWithCredential(credential).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Toast.makeText(activ, "Вхід виконано", Toast.LENGTH_LONG).show()
+                        activ.uiUpdate(task.result?.user)
+                    } else {
+                        Log.d("MyLog", "Google Sign In Exception : ${task.exception}")
+                    }
+                }
             }
         }
+
     }
 
     private fun sendEmailVerification(user: FirebaseUser) {
@@ -158,4 +162,21 @@ class AccountHelper(act: MainActivity) {
             }
         }
     }
+
+    fun signInAnonymously(listener: Listener) {
+        activ.mAuth.signInAnonymously().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                listener.onComplete()
+                Toast.makeText(activ, " Вы вошли как гость", Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(activ, " Не удалось войти как гость", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    interface Listener {
+        fun onComplete()
+    }
+
+
 }
