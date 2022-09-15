@@ -2,6 +2,7 @@ package com.DimasKach.bulletinboard.fragments
 
 import android.app.Activity
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -25,9 +26,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class ImageListFragment(
-    private val fragCloseInterface: FragmentCloseInterface,
-    private val newList: ArrayList<String>?,
-) : BaseAdsFrag(), AdapterCallback {
+    private val fragCloseInterface: FragmentCloseInterface) : BaseAdsFrag(), AdapterCallback {
     val adapter = SelectImageRvAdapter(this)
     val dragCallback = ItemTouchMoveCallback(adapter)
     val touchHelper = ItemTouchHelper(dragCallback)
@@ -48,10 +47,7 @@ class ImageListFragment(
             touchHelper.attachToRecyclerView(rcViewSelectImage)
             rcViewSelectImage.layoutManager = LinearLayoutManager(activity)
             rcViewSelectImage.adapter = adapter
-            if (newList != null) resizeSelectedImage(newList, true)
         }
-
-
     }
 
     override fun onItemDelete() {
@@ -74,10 +70,10 @@ class ImageListFragment(
 
     }
 
-    private fun resizeSelectedImage(newList: ArrayList<String>, needClear: Boolean) {
+    fun resizeSelectedImage(newList: ArrayList<Uri>, needClear: Boolean, activity: Activity) {
         job = CoroutineScope(Dispatchers.Main).launch {
-            val dialog = ProgressDialog.createProgressDialog(activity as Activity)
-            val bitmapList = ImageManager.imageResize(newList)
+            val dialog = ProgressDialog.createProgressDialog(activity)
+            val bitmapList = ImageManager.imageResize(newList, activity)
             dialog.dismiss()
             adapter.updateAdapter(bitmapList, needClear)
             if (adapter.mainArray.size > 2) addItem?.isVisible = false
@@ -90,6 +86,8 @@ class ImageListFragment(
             tb.inflateMenu(R.menu.menu_choose_image)
             val deleteItem = tb.menu.findItem(R.id.id_delete_image)
             addItem = tb.menu.findItem(R.id.id_add_image)
+            if (adapter.mainArray.size > 2) addItem?.isVisible = false
+
             tb.setNavigationOnClickListener {
                 showInterAd()
             }
@@ -100,21 +98,21 @@ class ImageListFragment(
             }
             addItem?.setOnMenuItemClickListener {
                 val imageCount = ImagePicker.MAX_IMAGE_COUNT - adapter.mainArray.size
-                ImagePicker.launcher(activity as EditAdsAct, (activity as EditAdsAct).launcherMultiselectImage, imageCount )
+                ImagePicker.addImages(activity as EditAdsAct, imageCount )
                 true
             }
         }
     }
 
-    fun upDateAdapter(newList: ArrayList<String>) {
-        resizeSelectedImage(newList, false)
+    fun upDateAdapter(newList: ArrayList<Uri>, activity: Activity) {
+        resizeSelectedImage(newList, false, activity)
     }
 
-    fun setSingleImage(uri: String, pos: Int) {
+    fun setSingleImage(uri: Uri, pos: Int) {
         var pBar = binding.rcViewSelectImage[pos].findViewById<ProgressBar>(R.id.pBar)
         job = CoroutineScope(Dispatchers.Main).launch {
             pBar.visibility = View.VISIBLE
-            val bitmapList = ImageManager.imageResize(listOf(uri))
+            val bitmapList = ImageManager.imageResize(arrayListOf(uri), activity as Activity)
             pBar.visibility = View.GONE
             adapter.mainArray[pos] = bitmapList[0]
             adapter.notifyDataSetChanged()

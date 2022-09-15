@@ -1,13 +1,11 @@
 package com.DimasKach.bulletinboard.activity
 
-import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
 import com.DimasKach.bulletinboard.MainActivity
 import com.DimasKach.bulletinboard.R
 import com.DimasKach.bulletinboard.adapters.ImageAdapter
@@ -19,7 +17,7 @@ import com.DimasKach.bulletinboard.fragments.FragmentCloseInterface
 import com.DimasKach.bulletinboard.fragments.ImageListFragment
 import com.DimasKach.bulletinboard.utils.CityHelper
 import com.DimasKach.bulletinboard.utils.ImagePicker
-import com.fxn.utility.PermUtil
+
 
 class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     var chooseImageFragment: ImageListFragment? = null
@@ -31,8 +29,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     private var ad: Ad? = null
     var editImagePos = 0
     private val dbManager = DbManager()
-    var launcherMultiselectImage: ActivityResultLauncher<Intent>? = null
-    var launcherSingleSelectImage: ActivityResultLauncher<Intent>? = null
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,15 +71,15 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     ) {
 
         when (requestCode) {
-            PermUtil.REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                   // ImagePicker.getImages(this, 3, ImagePicker.REQUEST_CODE_IMAGES)
-                } else {
-
-                    Toast.makeText(this, "Доступ не надано", Toast.LENGTH_LONG).show()
-                }
-                return
-            }
+//            PermUtil.REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS -> {
+//                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                   // ImagePicker.getImages(this, 3, ImagePicker.REQUEST_CODE_IMAGES)
+//                } else {
+//
+//                    Toast.makeText(this, "Доступ не надано", Toast.LENGTH_LONG).show()
+//                }
+//                return
+//            }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
@@ -92,8 +89,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     private fun init() {
         imageAdapter = ImageAdapter()
         binding.vpImages.adapter = imageAdapter
-        launcherMultiselectImage = ImagePicker.getLauncherForMultiSelectImage(this)
-        launcherSingleSelectImage = ImagePicker.getLauncherForSingleImage(this)
+
     }
 
     //OnClicks
@@ -123,7 +119,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
 
     fun onClickGetImages(view: View) {
         if (imageAdapter.mainArray.size == 0) {
-            ImagePicker.launcher(this, launcherMultiselectImage, 3)
+            ImagePicker.getMultiImages(this,  3)
         } else {
             openChooseImageFrag(null)
             chooseImageFragment?.upDateAdapterFromEdit(imageAdapter.mainArray)
@@ -176,8 +172,9 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         chooseImageFragment = null
     }
 
-    fun openChooseImageFrag(newList: ArrayList<String>?) {
-        chooseImageFragment = ImageListFragment(this, newList)
+    fun openChooseImageFrag(newList: ArrayList<Uri>?) {
+        chooseImageFragment = ImageListFragment(this)
+        if(newList != null )chooseImageFragment?.resizeSelectedImage(newList, true, this)
         binding.scrollViewMain.visibility = View.GONE
         val fm = supportFragmentManager.beginTransaction()
         fm.replace(R.id.place_holder, chooseImageFragment!!)
