@@ -4,9 +4,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.DimasKach.bulletinboard.R
 import com.DimasKach.bulletinboard.activity.EditAdsAct
@@ -50,7 +47,7 @@ class SelectImageRvAdapter(val adapterCallback: AdapterCallback) : RecyclerView.
         fun setData(bitMap: Bitmap) {
 
             viewBinding.imEditImage.setOnClickListener {
-                ImagePicker.launcher(context as EditAdsAct, context.launcherSingleSelectImage, 1)
+                ImagePicker.getSingleImages(context as EditAdsAct)
                 context.editImagePos = adapterPosition
             }
             viewBinding.imDelete.setOnClickListener {
