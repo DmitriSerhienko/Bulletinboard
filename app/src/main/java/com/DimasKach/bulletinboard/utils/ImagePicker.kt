@@ -47,24 +47,20 @@ object ImagePicker {
     }
 
     fun addImages(edAct: EditAdsAct, imageCounter: Int) {
-        val f = edAct.chooseImageFragment
         edAct.addPixToActivity(R.id.place_holder, getOptions(imageCounter)) { result ->
             when (result.status) {
                 PixEventCallback.Status.SUCCESS -> {
-                    edAct.chooseImageFragment = f
-                    openChooseImageFrag(edAct, f!!)
+                    openChooseImageFrag(edAct)
                     edAct.chooseImageFragment?.upDateAdapter(result.data as ArrayList<Uri>, edAct)
                 }
             }
         }
     }
     fun getSingleImages(edAct: EditAdsAct) {
-        val f = edAct.chooseImageFragment
         edAct.addPixToActivity(R.id.place_holder, getOptions(1)) { result ->
             when (result.status) {
                 PixEventCallback.Status.SUCCESS -> {
-                    edAct.chooseImageFragment = f
-                    openChooseImageFrag(edAct, f!!)
+                    openChooseImageFrag(edAct)
                     SingleImage(edAct, result.data[0])
                 }
             }
@@ -72,8 +68,8 @@ object ImagePicker {
         }
     }
 
-    private fun openChooseImageFrag(edAct: EditAdsAct, f: Fragment){
-        edAct.supportFragmentManager.beginTransaction().replace(R.id.place_holder, f).commit()
+    private fun openChooseImageFrag(edAct: EditAdsAct){
+        edAct.supportFragmentManager.beginTransaction().replace(R.id.place_holder, edAct.chooseImageFragment!!).commit()
     }
 
     private fun closePixFrag(edAct: EditAdsAct ) {
