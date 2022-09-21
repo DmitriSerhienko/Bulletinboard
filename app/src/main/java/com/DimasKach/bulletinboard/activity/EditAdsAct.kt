@@ -17,6 +17,8 @@ import com.DimasKach.bulletinboard.fragments.FragmentCloseInterface
 import com.DimasKach.bulletinboard.fragments.ImageListFragment
 import com.DimasKach.bulletinboard.utils.CityHelper
 import com.DimasKach.bulletinboard.utils.ImagePicker
+import com.google.android.gms.tasks.OnCompleteListener
+import java.io.ByteArrayOutputStream
 
 
 class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
@@ -28,6 +30,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     private var isEditState = false
     private var ad: Ad? = null
     var editImagePos = 0
+    private var imageIndex =0
     private val dbManager = DbManager()
 
 
@@ -64,35 +67,10 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         editDescription.setText(ad.description)
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray,
-    ) {
-
-        when (requestCode) {
-//            PermUtil.REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS -> {
-//                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                   // ImagePicker.getImages(this, 3, ImagePicker.REQUEST_CODE_IMAGES)
-//                } else {
-//
-//                    Toast.makeText(this, "Доступ не надано", Toast.LENGTH_LONG).show()
-//                }
-//                return
-//            }
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
-
-
-
     private fun init() {
         imageAdapter = ImageAdapter()
         binding.vpImages.adapter = imageAdapter
-
     }
-
-    //OnClicks
 
     fun onClickSelectCountry(view: View) {
         val listCountry = CityHelper.getAllCountries(this)
@@ -114,7 +92,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
 
     fun onClickSelectCat(view: View) {
         val listCat = resources.getStringArray(R.array.category).toMutableList() as ArrayList
-            dialog.showSpinnerDialog(this, listCat, binding.tvCat)
+        dialog.showSpinnerDialog(this, listCat, binding.tvCat)
     }
 
     fun onClickGetImages(view: View) {
@@ -124,15 +102,15 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
             openChooseImageFrag(null)
             chooseImageFragment?.upDateAdapterFromEdit(imageAdapter.mainArray)
         }
-
     }
 
     fun onClickPublish(view: View){
-        val adTemp = fillAd()
+        ad = fillAd()
         if (isEditState) {
-            dbManager.publishAd(adTemp.copy(key = ad?.key), onPublishFinish() )
+            ad?.copy(key = ad?.key)?.let { dbManager.publishAd(it, onPublishFinish() ) }
         } else {
-            dbManager.publishAd(adTemp, onPublishFinish())
+            //dbManager.publishAd(adTemp, onPublishFinish())
+            uploadImages()
         }
     }
 
@@ -157,6 +135,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
                 edTitle.text.toString(),
                 edPrice.text.toString(),
                 editDescription.text.toString(),
+                "empty",
                 dbManager.db.push().key,
                 "0",
                 dbManager.auth.uid
@@ -180,4 +159,45 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         fm.replace(R.id.place_holder, chooseImageFragment!!)
         fm.commit()
     }
+
+    private fun uploadImages(){
+        if(imageAdapter.mainArray.size == imageIndex){
+            dbManager.publishAd(ad!!, onPublishFinish())
+            return
+        }
+        val byteArray = prepareImageByteArray(imageAdapter.mainArray[imageIndex])
+        uploadImage(byteArray){
+            nextImage(it.result.toString())
+        }
+    }
+    private fun nextImage (uri: String){
+        setImageUriToAd(uri)
+        imageIndex++
+        uploadImages()
+    }
+
+    private fun setImageUriToAd(uri: String){
+        when (imageIndex){
+            0 -> ad = ad?.copy(mainImage = uri)
+            1 -> ad = ad?.copy(image2 = uri)
+            2 -> ad = ad?.copy(image3 = uri)
+        }
+    }
+
+    private fun prepareImageByteArray(bitmap: Bitmap): ByteArray{
+        val outStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, outStream)
+        return outStream.toByteArray()
+    }
+
+    private fun uploadImage(byteArray: ByteArray, listener: OnCompleteListener<Uri>){
+        val imStorageRef = dbManager.dbStorage
+            .child(dbManager.auth.uid!!)
+            .child("image_${System.currentTimeMillis()}")
+        val upTask = imStorageRef.putBytes(byteArray)
+        upTask.continueWithTask{
+                task -> imStorageRef.downloadUrl
+        }.addOnCompleteListener(listener)
+    }
+
 }

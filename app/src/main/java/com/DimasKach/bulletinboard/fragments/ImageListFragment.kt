@@ -58,10 +58,6 @@ class ImageListFragment(
         adapter.updateAdapter(bitmapList, true)
     }
 
-    override fun onDetach() {
-        super.onDetach()
-    }
-
     override fun onClose() {
         super.onClose()
         activity?.supportFragmentManager?.beginTransaction()?.remove(this@ImageListFragment)?.commit()
