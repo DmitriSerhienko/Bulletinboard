@@ -59,4 +59,11 @@
     <string name="publish">Опублікувати</string>
     <!-- EAd list Item-->
     <string name="price_desc">Ціна:</string>
+    <string name="ad_country">Країна:</string>
+    <string name="ad_city">Місто:</string>
+    <string name="ad_index">Індекс:</string>
+    <string name="ad_tel">Телефон:</string>
+    <string name="ad_description">Опис товару:</string>
+    <string name="ad_send">Доставка:</string>
+    <string name="ad_mail">Ел. пошта:</string>
 </resources>
