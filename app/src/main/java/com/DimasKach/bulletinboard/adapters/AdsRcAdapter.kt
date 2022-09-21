@@ -12,6 +12,7 @@ import com.DimasKach.bulletinboard.activity.EditAdsAct
 import com.DimasKach.bulletinboard.model.Ad
 import com.DimasKach.bulletinboard.databinding.AdListItemBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.squareup.picasso.Picasso
 
 class AdsRcAdapter(val act: MainActivity) : RecyclerView.Adapter<AdsRcAdapter.AdHolder>() {
     val adArray = ArrayList<Ad>()
@@ -44,12 +45,14 @@ class AdsRcAdapter(val act: MainActivity) : RecyclerView.Adapter<AdsRcAdapter.Ad
             tvPrice.text = ad.price
             tvViewCounter.text = ad.viewsCounter
             tvFavCounter.text = ad.favCounter
-            if(ad.isFav) {
-                ibFav.setImageResource(R.drawable.ic_fav_pressed)
-            } else{
-                ibFav.setImageResource(R.drawable.ic_fav_normal)
-            }
+            Picasso.get().load(ad.mainImage).into(mainImage)
+
+            isFav(ad)
             showEditPanel(isOwner(ad))
+            mainOnClick(ad)
+
+        }
+        private fun mainOnClick (ad: Ad) = with(binding){
             itemView.setOnClickListener {
                 act.onAdViewed(ad)
             }
@@ -59,6 +62,14 @@ class AdsRcAdapter(val act: MainActivity) : RecyclerView.Adapter<AdsRcAdapter.Ad
             ibEditAd.setOnClickListener(onClickEdit(ad))
             ibDeleteAd.setOnClickListener {
                 act.onDeleteItem(ad)
+            }
+        }
+
+        private fun isFav(ad: Ad)= with(binding) {
+            if(ad.isFav) {
+                ibFav.setImageResource(R.drawable.ic_fav_pressed)
+            } else{
+                ibFav.setImageResource(R.drawable.ic_fav_normal)
             }
         }
 
