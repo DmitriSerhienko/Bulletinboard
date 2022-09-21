@@ -14,7 +14,7 @@ class DbManager {
     val db =
         Firebase.database("https://bulettinboard-default-rtdb.europe-west1.firebasedatabase.app/")
             .getReference(MAIN_NODE)
-    val dbStorage = Firebase.storage.getReference(MAIN_NODE)
+    val dbStorage = Firebase.storage("gs://bulettinboard.appspot.com").getReference(MAIN_NODE)
     val auth = Firebase.auth
 
     fun publishAd(ad: Ad, finishListener: FinishWorkListener) {

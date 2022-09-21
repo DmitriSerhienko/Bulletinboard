@@ -109,7 +109,6 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         if (isEditState) {
             ad?.copy(key = ad?.key)?.let { dbManager.publishAd(it, onPublishFinish() ) }
         } else {
-            //dbManager.publishAd(adTemp, onPublishFinish())
             uploadImages()
         }
     }
