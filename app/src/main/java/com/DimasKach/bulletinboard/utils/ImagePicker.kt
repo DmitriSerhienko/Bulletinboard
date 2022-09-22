@@ -3,13 +3,9 @@ package com.DimasKach.bulletinboard.utils
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
+import android.util.Log
 import android.view.View
-import android.widget.Toast
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import com.DimasKach.bulletinboard.R
 import com.DimasKach.bulletinboard.activity.EditAdsAct
 import io.ak1.pix.helpers.PixEventCallback
@@ -56,12 +52,12 @@ object ImagePicker {
             }
         }
     }
-    fun getSingleImages(edAct: EditAdsAct) {
+    fun getSingleImage(edAct: EditAdsAct) {
         edAct.addPixToActivity(R.id.place_holder, getOptions(1)) { result ->
             when (result.status) {
                 PixEventCallback.Status.SUCCESS -> {
                     openChooseImageFrag(edAct)
-                    SingleImage(edAct, result.data[0])
+                    singleImage(edAct, result.data[0])
                 }
             }
             //PixEventCallback.Status.BACK_PRESSED ->
@@ -99,8 +95,7 @@ object ImagePicker {
         }
     }
 
-    private fun SingleImage(edAct: EditAdsAct, uri: Uri){
-
+    private fun singleImage(edAct: EditAdsAct, uri: Uri){
         edAct.chooseImageFragment?.setSingleImage(uri, edAct.editImagePos)
 
     }
