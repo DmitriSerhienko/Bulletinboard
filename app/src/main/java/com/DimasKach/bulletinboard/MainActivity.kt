@@ -26,7 +26,6 @@ import com.DimasKach.bulletinboard.adapters.AdsRcAdapter
 import com.DimasKach.bulletinboard.databinding.ActivityMainBinding
 import com.DimasKach.bulletinboard.dialoghelper.DialogConst
 import com.DimasKach.bulletinboard.dialoghelper.DialogHelper
-import com.DimasKach.bulletinboard.dialoghelper.GoogleAccConst
 import com.DimasKach.bulletinboard.model.Ad
 import com.DimasKach.bulletinboard.viewmodel.FirebaseViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -47,6 +46,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     val mAuth = Firebase.auth
     val adapter = AdsRcAdapter(this)
     private val firebaseViewModel: FirebaseViewModel by viewModels()
+    private var clearUpdate: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,8 +90,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun initViewModel() {
         firebaseViewModel.liveAdsData.observe(this) {
-            adapter.upDateAdapter(it)
-            binding.mainContent.tvEmpty.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
+            if(!clearUpdate){
+                adapter.upDateAdapter(it)
+            }else {
+                adapter.upDateAdapterWithClear(it)
+            }
+
+            binding.mainContent.tvEmpty.visibility = if (adapter.itemCount == 0) View.VISIBLE else View.GONE
         }
     }
 
@@ -115,6 +120,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun bottomMenuOnClick() = with(binding) {
         mainContent.bNavView.setOnItemSelectedListener { item ->
+            clearUpdate = true
             when (item.itemId) {
                 R.id.id_new_ad -> {
                     val i = Intent(this@MainActivity, EditAdsAct::class.java)
@@ -145,6 +151,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        clearUpdate = true
         when (item.itemId) {
             R.id.id_my_ads -> {
                 Toast.makeText(this, "Pushed 1", Toast.LENGTH_LONG).show()
@@ -228,17 +235,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         aссCat.title = spanAссCat
     }
 
-    private fun scrollListener() = with(binding.mainContent){
-        rcView.addOnScrollListener(object: RecyclerView.OnScrollListener(){
+    private fun scrollListener() = with(binding.mainContent) {
+        rcView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recView, newState)
-                if(!recView.canScrollVertically(SCROLL_DOWN)
-                    && newState == RecyclerView.SCROLL_STATE_IDLE){
-                        val adsList = firebaseViewModel.liveAdsData.value!!
-                    if (adsList.isNotEmpty()){
-                        adsList[adsList.size - 1].let { it.time?.let { it1 ->
-                            firebaseViewModel.loadAllAds(it1)
-                        } }
+                if (!recView.canScrollVertically(SCROLL_DOWN)
+                    && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    clearUpdate = false
+                    val adsList = firebaseViewModel.liveAdsData.value!!
+                    if (adsList.isNotEmpty()) {
+                        adsList[adsList.size - 1].let {
+                            it.time?.let { it1 ->
+                                firebaseViewModel.loadAllAds(it1)
+                            }
+                        }
                     }
 
 
