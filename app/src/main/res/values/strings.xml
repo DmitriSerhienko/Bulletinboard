@@ -45,6 +45,8 @@
     <string name="city">Місто</string>
     <string name="index">Індекс</string>
     <string name="tel">Телефон</string>
+    <string name="mail">Електронна пошта</string>
+    <string name="mail_hint">Введіть Email</string>
     <string name="tel_number">Введіть номер телефону</string>
     <string name="select_category">*Обрати категорію</string>
     <string name="category">Категорія</string>

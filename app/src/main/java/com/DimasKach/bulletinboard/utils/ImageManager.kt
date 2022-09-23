@@ -8,10 +8,10 @@ import android.support.media.ExifInterface
 import android.util.Log
 import android.widget.ImageView
 import androidx.core.net.toUri
+import com.DimasKach.bulletinboard.adapters.ImageAdapter
+import com.DimasKach.bulletinboard.model.Ad
 import com.squareup.picasso.Picasso
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 import java.io.File
 import java.io.InputStream
@@ -71,7 +71,7 @@ object ImageManager {
         return@withContext bitmapList
     }
 
-    suspend fun getBitMapFromUri(uris: List<String?>): List<Bitmap> = withContext(Dispatchers.IO) {
+    private suspend fun getBitMapFromUri(uris: List<String?>): List<Bitmap> = withContext(Dispatchers.IO) {
         val bitmapList = ArrayList<Bitmap>()
 
         for (i in uris.indices) {
@@ -80,6 +80,14 @@ object ImageManager {
             }
         }
         return@withContext bitmapList
+    }
+
+    fun fillImageArray(ad: Ad, adapter: ImageAdapter){
+        val listUris = listOf(ad.mainImage, ad.image2, ad.image3)
+        CoroutineScope(Dispatchers.Main).launch {
+            val bitMapList = getBitMapFromUri(listUris)
+            adapter.update(bitMapList as ArrayList<Bitmap>)
+        }
     }
 
 }

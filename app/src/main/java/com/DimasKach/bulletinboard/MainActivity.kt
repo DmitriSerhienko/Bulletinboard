@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.DimasKach.bulletinboard.accounthelper.AccountHelper
+import com.DimasKach.bulletinboard.activity.DescriptionActivity
 import com.DimasKach.bulletinboard.activity.EditAdsAct
 import com.DimasKach.bulletinboard.adapters.AdsRcAdapter
 import com.DimasKach.bulletinboard.databinding.ActivityMainBinding
@@ -194,6 +195,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onAdViewed(ad: Ad) {
         firebaseViewModel.adViewed(ad)
+        val i = Intent(this, DescriptionActivity::class.java)
+        i.putExtra("AD", ad)
+        startActivity(i)
     }
 
     override fun onFavClicked(ad: Ad) {

@@ -16,6 +16,7 @@ import com.DimasKach.bulletinboard.dialogs.DialogSpinnerHelper
 import com.DimasKach.bulletinboard.fragments.FragmentCloseInterface
 import com.DimasKach.bulletinboard.fragments.ImageListFragment
 import com.DimasKach.bulletinboard.utils.CityHelper
+import com.DimasKach.bulletinboard.utils.ImageManager
 import com.DimasKach.bulletinboard.utils.ImagePicker
 import com.google.android.gms.tasks.OnCompleteListener
 import java.io.ByteArrayOutputStream
@@ -59,12 +60,14 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         tvCountry.text = ad.country
         tvCity.text = ad.city
         editTel.setText(ad.tel)
+        editEmail.setText(ad.email)
         editIndex.setText(ad.index)
         checkBoxWithSend.isChecked = ad.withSent.toBoolean()
         tvCat.text = ad.category
         edTitle.setText(ad.title)
         edPrice.setText(ad.price)
         editDescription.setText(ad.description)
+        ImageManager.fillImageArray(ad, imageAdapter)
     }
 
     private fun init() {
@@ -134,6 +137,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
                 edTitle.text.toString(),
                 edPrice.text.toString(),
                 editDescription.text.toString(),
+                editEmail.text.toString(),
                 "empty",
                 "empty",
                 "empty",
