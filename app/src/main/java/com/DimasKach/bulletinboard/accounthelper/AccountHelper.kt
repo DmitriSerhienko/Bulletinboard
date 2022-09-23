@@ -120,7 +120,7 @@ class AccountHelper(val activ: MainActivity) {
     fun singInWithGoogle() {
         signInClient = getSignInClient()
         val intent = signInClient.signInIntent
-        activ.startActivityForResult(intent, GoogleAccConst.GOOGLE_SIGN_IN_REQUEST_CODE)
+        activ.googleSignInLauncher.launch(intent)
     }
 
     fun signOutG() {

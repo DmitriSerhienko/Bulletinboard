@@ -7,6 +7,8 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -33,8 +35,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     AdsRcAdapter.Listener/*, ReadDataCallback - используем если идем без архитектуры  MVVM*/ {
     private lateinit var binding: ActivityMainBinding
     private lateinit var tvAccount: TextView
+    lateinit var googleSignInLauncher: ActivityResultLauncher <Intent>
     private val dialogHelper = DialogHelper(this)
     val mAuth = Firebase.auth
+
 
     //    val dbManager = DbManager(this) - используем если идем без архитектуры  MVVM
     val adapter = AdsRcAdapter(this)
@@ -58,9 +62,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         binding.mainContent.bNavView.selectedItemId = R.id.id_home
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == GoogleAccConst.GOOGLE_SIGN_IN_REQUEST_CODE) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+    private fun onActivityResult() {
+        googleSignInLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()){
+            val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
             try {
                 val account = task.getResult(ApiException::class.java)
                 if (account != null) {
@@ -70,7 +75,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 Log.d("MyLog", "Api error: ${e.message}")
             }
         }
-        super.onActivityResult(requestCode, resultCode, data)
+
+
     }
 
     override fun onStart() {
@@ -87,6 +93,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun init() {
         setSupportActionBar(binding.mainContent.toolbar)
+        onActivityResult()
         val toggle =
             ActionBarDrawerToggle(this,
                 binding.drawerLayout,
