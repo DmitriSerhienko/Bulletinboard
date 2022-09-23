@@ -228,13 +228,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val adsCat = menu.findItem(R.id.adsCat)
         val spanAdsCat = SpannableString(adsCat.title)
         spanAdsCat.setSpan(ForegroundColorSpan(ContextCompat.getColor(this@MainActivity,
-            R.color.colour_red)), 0, adsCat.title.length, 0)
+            R.color.dark_red)), 0, adsCat.title.length, 0)
         adsCat.title = spanAdsCat
 
         val aссCat = menu.findItem(R.id.accCat)
         val spanAссCat = SpannableString(aссCat.title)
         spanAссCat.setSpan(ForegroundColorSpan(ContextCompat.getColor(this@MainActivity,
-            R.color.colour_red)), 0, aссCat.title.length, 0)
+            R.color.dark_red)), 0, aссCat.title.length, 0)
         aссCat.title = spanAссCat
     }
 
