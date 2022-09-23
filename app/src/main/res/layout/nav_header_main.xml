@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:background="@color/colour_red"
+        android:background="@color/dark_red"
         android:padding="3dp"
         android:text="Гість"
         android:textColor="@color/white"

@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.DimasKach.bulletinboard.accounthelper.AccountHelper
 import com.DimasKach.bulletinboard.activity.DescriptionActivity
 import com.DimasKach.bulletinboard.activity.EditAdsAct
@@ -44,9 +45,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     lateinit var googleSignInLauncher: ActivityResultLauncher <Intent>
     private val dialogHelper = DialogHelper(this)
     val mAuth = Firebase.auth
-
-
-    //    val dbManager = DbManager(this) - используем если идем без архитектуры  MVVM
     val adapter = AdsRcAdapter(this)
     private val firebaseViewModel: FirebaseViewModel by viewModels()
 
@@ -58,9 +56,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         init()
         initRecyclerView()
         initViewModel()
-        firebaseViewModel.loadAllAds()
         bottomMenuOnClick()
-//        dbManager.readDataFromDb() - используем если идем без архитектуры  MVVM
+        scrollListener()
+
     }
 
     override fun onResume() {
@@ -131,7 +129,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     mainContent.toolbar.title = getString(R.string.ad_fav)
                 }
                 R.id.id_home -> {
-                    firebaseViewModel.loadAllAds()
+                    firebaseViewModel.loadAllAds("0")
                     mainContent.toolbar.title = getString(R.string.ad_def)
                 }
             }
@@ -200,14 +198,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    //    override fun readData(list: List<Ad>) {  - используем если идем без архитектуры  MVVM
-//        adapter.upDateAdapter(list)
-//    }
-    companion object {
-        const val EDIT_STATE = "edit_state"
-        const val ADS_DATA = "ads_data"
-    }
-
     override fun onDeleteItem(ad: Ad) {
         firebaseViewModel.deleteItem(ad)
     }
@@ -236,6 +226,31 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         spanAссCat.setSpan(ForegroundColorSpan(ContextCompat.getColor(this@MainActivity,
             R.color.dark_red)), 0, aссCat.title.length, 0)
         aссCat.title = spanAссCat
+    }
+
+    private fun scrollListener() = with(binding.mainContent){
+        rcView.addOnScrollListener(object: RecyclerView.OnScrollListener(){
+            override fun onScrollStateChanged(recView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recView, newState)
+                if(!recView.canScrollVertically(SCROLL_DOWN)
+                    && newState == RecyclerView.SCROLL_STATE_IDLE){
+                        val adsList = firebaseViewModel.liveAdsData.value!!
+                    if (adsList.isNotEmpty()){
+                        adsList[adsList.size - 1].let { it.time?.let { it1 ->
+                            firebaseViewModel.loadAllAds(it1)
+                        } }
+                    }
+
+
+                }
+            }
+        })
+    }
+
+    companion object {
+        const val EDIT_STATE = "edit_state"
+        const val ADS_DATA = "ads_data"
+        const val SCROLL_DOWN = 1
     }
 
 }
