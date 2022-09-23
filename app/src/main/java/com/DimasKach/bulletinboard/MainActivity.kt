@@ -2,9 +2,12 @@ package com.DimasKach.bulletinboard
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -12,6 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.DimasKach.bulletinboard.accounthelper.AccountHelper
@@ -30,11 +34,13 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.squareup.picasso.Picasso
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
     AdsRcAdapter.Listener/*, ReadDataCallback - используем если идем без архитектуры  MVVM*/ {
     private lateinit var binding: ActivityMainBinding
     private lateinit var tvAccount: TextView
+    private lateinit var imAccount: ImageView
     lateinit var googleSignInLauncher: ActivityResultLauncher <Intent>
     private val dialogHelper = DialogHelper(this)
     val mAuth = Firebase.auth
@@ -94,6 +100,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun init() {
         setSupportActionBar(binding.mainContent.toolbar)
         onActivityResult()
+        navViewSettings()
         val toggle =
             ActionBarDrawerToggle(this,
                 binding.drawerLayout,
@@ -104,6 +111,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
         binding.navView.setNavigationItemSelectedListener(this)
         tvAccount = binding.navView.getHeaderView(0).findViewById(R.id.tvAccountEmail)
+        imAccount = binding.navView.getHeaderView(0).findViewById(R.id.imAccountImage)
+
     }
 
     private fun bottomMenuOnClick() = with(binding) {
@@ -179,12 +188,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             dialogHelper.accHelper.signInAnonymously(object : AccountHelper.Listener {
                 override fun onComplete() {
                     tvAccount.setText(R.string.anonymous_enter)
+                    imAccount.setImageResource(R.drawable.ic_account_def)
                 }
             })
         } else if (user.isAnonymous) {
             tvAccount.setText(R.string.anonymous_enter)
+            imAccount.setImageResource(R.drawable.ic_account_def)
         } else if(!user.isAnonymous){
             tvAccount.text = user.email
+            Picasso.get().load(user.photoUrl).into(imAccount)
         }
     }
 
@@ -209,6 +221,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onFavClicked(ad: Ad) {
         firebaseViewModel.onFavClick(ad)
+    }
+
+    private fun navViewSettings() = with(binding){
+        val menu = navView.menu
+        val adsCat = menu.findItem(R.id.adsCat)
+        val spanAdsCat = SpannableString(adsCat.title)
+        spanAdsCat.setSpan(ForegroundColorSpan(ContextCompat.getColor(this@MainActivity,
+            R.color.colour_red)), 0, adsCat.title.length, 0)
+        adsCat.title = spanAdsCat
+
+        val aссCat = menu.findItem(R.id.accCat)
+        val spanAссCat = SpannableString(aссCat.title)
+        spanAссCat.setSpan(ForegroundColorSpan(ContextCompat.getColor(this@MainActivity,
+            R.color.colour_red)), 0, aссCat.title.length, 0)
+        aссCat.title = spanAссCat
     }
 
 }
