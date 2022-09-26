@@ -9,8 +9,30 @@ class FirebaseViewModel: ViewModel() {
     private val dbManager = DbManager()
     val liveAdsData = MutableLiveData<ArrayList<Ad>>()
 
-    fun loadAllAds (lastTime: String){
-        dbManager.getAllAds(lastTime, object: DbManager.ReadDataCallback{
+    fun loadAllAdsFirstPage (){
+        dbManager.getAllAdsFirstPage(object: DbManager.ReadDataCallback{
+            override fun readData(list: ArrayList<Ad>) {
+                liveAdsData.value = list
+            }
+        })
+    }
+    fun loadAllAdsNextPage (time: String){
+        dbManager.getAllAdsNextPage(time, object: DbManager.ReadDataCallback{
+            override fun readData(list: ArrayList<Ad>) {
+                liveAdsData.value = list
+            }
+        })
+    }
+
+    fun loadAllAdsFromCat (cat: String){
+        dbManager.getAllAdsFromCatFirstPage(cat, object: DbManager.ReadDataCallback{
+            override fun readData(list: ArrayList<Ad>) {
+                liveAdsData.value = list
+            }
+        })
+    }
+    fun loadAllAdsFromCatNextPage (catTime: String){
+        dbManager.getAllAdsFromCatNextPage(catTime, object: DbManager.ReadDataCallback{
             override fun readData(list: ArrayList<Ad>) {
                 liveAdsData.value = list
             }

@@ -47,6 +47,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     val adapter = AdsRcAdapter(this)
     private val firebaseViewModel: FirebaseViewModel by viewModels()
     private var clearUpdate: Boolean = true
+    private var currentCategory: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,17 +91,32 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun initViewModel() {
         firebaseViewModel.liveAdsData.observe(this) {
+            val list = getAdsByCategory(it)
             if(!clearUpdate){
-                adapter.upDateAdapter(it)
+                adapter.upDateAdapter(list)
             }else {
-                adapter.upDateAdapterWithClear(it)
+                adapter.upDateAdapterWithClear(list)
             }
 
             binding.mainContent.tvEmpty.visibility = if (adapter.itemCount == 0) View.VISIBLE else View.GONE
         }
     }
+    private fun getAdsByCategory(list: ArrayList<Ad>): ArrayList<Ad>{
+        val tempList = ArrayList<Ad>()
+        tempList.addAll(list)
+        if(currentCategory != getString(R.string.ad_def)){
+            tempList.clear()
+            list.forEach{
+                if(currentCategory == it.category) tempList.add(it)
+            }
+        }
+        tempList.reverse()
+        return tempList
+    }
+
 
     private fun init() {
+        currentCategory = getString(R.string.ad_def)
         setSupportActionBar(binding.mainContent.toolbar)
         onActivityResult()
         navViewSettings()
@@ -135,7 +151,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     mainContent.toolbar.title = getString(R.string.ad_fav)
                 }
                 R.id.id_home -> {
-                    firebaseViewModel.loadAllAds("0")
+                    currentCategory = getString(R.string.ad_def)
+                    firebaseViewModel.loadAllAdsFirstPage()
                     mainContent.toolbar.title = getString(R.string.ad_def)
                 }
             }
@@ -157,16 +174,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 Toast.makeText(this, "Pushed 1", Toast.LENGTH_LONG).show()
             }
             R.id.id_car -> {
-                Toast.makeText(this, "Pushed 2", Toast.LENGTH_LONG).show()
+                getAdsFromCat(getString(R.string.ad_car))
             }
             R.id.id_pc -> {
-
+                getAdsFromCat(getString(R.string.ad_pc))
             }
             R.id.id_phone -> {
-
+                getAdsFromCat(getString(R.string.ad_phone))
             }
             R.id.id_dm -> {
-
+                getAdsFromCat(getString(R.string.ad_dm))
             }
             R.id.ac_sing_up -> {
                 dialogHelper.createSingDialog(DialogConst.SING_UP_STATE)
@@ -186,6 +203,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         binding.drawerLayout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    private fun getAdsFromCat(cat: String){
+        currentCategory = cat
+        firebaseViewModel.loadAllAdsFromCat(cat)
     }
 
     fun uiUpdate(user: FirebaseUser?) {
@@ -244,17 +266,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     clearUpdate = false
                     val adsList = firebaseViewModel.liveAdsData.value!!
                     if (adsList.isNotEmpty()) {
-                        adsList[adsList.size - 1].let {
-                            it.time?.let { it1 ->
-                                firebaseViewModel.loadAllAds(it1)
-                            }
-                        }
+                        getAdsFromCat(adsList)
                     }
-
-
                 }
             }
         })
+    }
+
+    private fun getAdsFromCat(adsList: ArrayList<Ad>){
+        adsList[0].let {
+            if (currentCategory != getString(R.string.ad_def)) {
+                val catTime = "${it.category}_${it.time}"
+                firebaseViewModel.loadAllAdsFromCatNextPage(catTime)
+            } else {
+                firebaseViewModel.loadAllAdsNextPage(it.time!!)
+            }
+        }
     }
 
     companion object {
