@@ -35,8 +35,6 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     private var imageIndex =0
     private val dbManager = DbManager()
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditAdsBinding.inflate(layoutInflater)
