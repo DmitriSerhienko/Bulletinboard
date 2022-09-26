@@ -1,5 +1,6 @@
 package com.DimasKach.bulletinboard.fragments
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.graphics.Bitmap
 import android.net.Uri
@@ -72,7 +73,7 @@ class ImageListFragment(
             val bitmapList = ImageManager.imageResize(newList, activity)
             dialog.dismiss()
             adapter.updateAdapter(bitmapList, needClear)
-            if (adapter.mainArray.size > 2) addItem?.isVisible = false
+            if (adapter.mainArray.size > 2) addItem?.isVisible = true
         }
     }
 
@@ -104,8 +105,9 @@ class ImageListFragment(
         resizeSelectedImage(newList, false, activity)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setSingleImage(uri: Uri, pos: Int) {
-        var pBar = binding.rcViewSelectImage[pos].findViewById<ProgressBar>(R.id.pBar)
+        val pBar = binding.rcViewSelectImage[pos].findViewById<ProgressBar>(R.id.pBar)
         job = CoroutineScope(Dispatchers.Main).launch {
             pBar.visibility = View.VISIBLE
             val bitmapList = ImageManager.imageResize(arrayListOf(uri), activity as Activity)

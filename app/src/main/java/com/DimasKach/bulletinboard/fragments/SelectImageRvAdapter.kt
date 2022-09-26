@@ -1,5 +1,6 @@
 package com.DimasKach.bulletinboard.fragments
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.view.LayoutInflater
@@ -37,6 +38,7 @@ class SelectImageRvAdapter(val adapterCallback: AdapterCallback) : RecyclerView.
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onClear() {
         notifyDataSetChanged()
     }
@@ -62,6 +64,7 @@ class SelectImageRvAdapter(val adapterCallback: AdapterCallback) : RecyclerView.
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateAdapter(newList: List<Bitmap>, needClear: Boolean) {
         if (needClear) mainArray.clear()
         mainArray.addAll(newList)
