@@ -293,14 +293,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     clearUpdate = false
                     val adsList = firebaseViewModel.liveAdsData.value!!
                     if (adsList.isNotEmpty()) {
-                        getAdsFromCat(adsList)
+                        getAdsFromCats(adsList)
                     }
                 }
             }
         })
     }
 
-    private fun getAdsFromCat(adsList: ArrayList<Ad>){
+    private fun getAdsFromCats(adsList: ArrayList<Ad>){
         adsList[0].let {
             if (currentCategory != getString(R.string.ad_def)) {
                 val catTime = "${it.category}_${it.time}"

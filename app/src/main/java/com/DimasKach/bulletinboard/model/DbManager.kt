@@ -1,5 +1,6 @@
 package com.DimasKach.bulletinboard.model
 
+import com.DimasKach.bulletinboard.utils.FilterManager
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -21,7 +22,7 @@ class DbManager {
         if (auth.uid != null) db.child(ad.key ?: "empty")
             .child(auth.uid!!).child(AD_NODE)
             .setValue(ad).addOnCompleteListener {
-                val adFilter = AdFilter(ad.time , "${ad.category}_${ad.time}")
+                val adFilter = FilterManager.createFilter(ad)
                 db.child(ad.key ?: "empty").child(FILTER_NODE)
                     .setValue(adFilter).addOnCompleteListener {
                         finishListener.onFinish()
@@ -94,12 +95,12 @@ class DbManager {
     }
 
     fun getAllAdsFromCatFirstPage(cat: String, readDataCallback: ReadDataCallback?) {
-        val query = db.orderByChild("/adFilter/catTime")
+        val query = db.orderByChild("/adFilter/cat_time")
             .startAt(cat).endAt(cat + "_\uf8ff").limitToLast(ADS_LIMIT)
         readDataFromDb(query, readDataCallback)
     }
     fun getAllAdsFromCatNextPage(catTime: String, readDataCallback: ReadDataCallback?) {
-        val query = db.orderByChild("/adFilter/catTime").endBefore(catTime).limitToLast(ADS_LIMIT)
+        val query = db.orderByChild("/adFilter/cat_time").endBefore(catTime).limitToLast(ADS_LIMIT)
         readDataFromDb(query, readDataCallback)
     }
 
