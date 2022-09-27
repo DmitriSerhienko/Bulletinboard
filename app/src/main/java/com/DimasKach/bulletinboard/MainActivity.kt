@@ -29,6 +29,7 @@ import com.DimasKach.bulletinboard.databinding.ActivityMainBinding
 import com.DimasKach.bulletinboard.dialoghelper.DialogConst
 import com.DimasKach.bulletinboard.dialoghelper.DialogHelper
 import com.DimasKach.bulletinboard.model.Ad
+import com.DimasKach.bulletinboard.utils.FilterManager
 import com.DimasKach.bulletinboard.viewmodel.FirebaseViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
@@ -106,6 +107,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             ActivityResultContracts.StartActivityForResult()){
             if(it.resultCode == RESULT_OK){
                 filter = it.data?.getStringExtra(FilterActivity.FILTER_KEY)
+                Log.d("MyLog", "Filter: $filter")
+                Log.d("MyLog", "getFilter: ${FilterManager.getFilter(filter!!)}")
             }
         }
     }

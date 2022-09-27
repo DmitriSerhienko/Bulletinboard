@@ -2,6 +2,7 @@ package com.DimasKach.bulletinboard.utils
 
 import com.DimasKach.bulletinboard.model.Ad
 import com.DimasKach.bulletinboard.model.AdFilter
+import java.lang.StringBuilder
 
 object FilterManager {
     fun createFilter(ad: Ad): AdFilter{
@@ -22,5 +23,15 @@ object FilterManager {
             "${ad.withSent}_${ad.time}"
 
         )
+    }
+    fun getFilter(filter: String): String{
+        val sBuilder = StringBuilder()
+        val tempArray = filter.split("_")
+        if(tempArray[0] != "empty") sBuilder.append("country_")
+        if(tempArray[1] != "empty") sBuilder.append("city_")
+        if(tempArray[2] != "empty") sBuilder.append("index_")
+        sBuilder.append("withSent_time")
+
+        return sBuilder.toString()
     }
 }
