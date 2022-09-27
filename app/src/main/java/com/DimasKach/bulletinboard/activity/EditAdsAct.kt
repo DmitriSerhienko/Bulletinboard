@@ -27,7 +27,6 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     var chooseImageFragment: ImageListFragment? = null
     lateinit var binding: ActivityEditAdsBinding
     private val dialog = DialogSpinnerHelper()
-    var isImagesPermissionGranted = false
     lateinit var imageAdapter: ImageAdapter
     private var isEditState = false
     private var ad: Ad? = null
@@ -42,6 +41,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         init()
         checkEditState()
         imageChangeCounter()
+        onClickPublish()
     }
 
     private fun checkEditState(){
@@ -107,13 +107,16 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         }
     }
 
-    fun onClickPublish(view: View){
-        ad = fillAd()
-        if (isEditState) {
-            ad?.copy(key = ad?.key)?.let { dbManager.publishAd(it, onPublishFinish() ) }
-        } else {
-            uploadImages()
+    fun onClickPublish() = with(binding){
+        btPublish.setOnClickListener {
+            ad = fillAd()
+            if (isEditState) {
+                ad?.copy(key = ad?.key)?.let { dbManager.publishAd(it, onPublishFinish() ) }
+            } else {
+                uploadImages()
+            }
         }
+
     }
 
     private fun onPublishFinish(): DbManager.FinishWorkListener{

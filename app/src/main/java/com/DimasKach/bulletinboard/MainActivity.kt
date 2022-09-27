@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.DimasKach.bulletinboard.accounthelper.AccountHelper
 import com.DimasKach.bulletinboard.activity.DescriptionActivity
 import com.DimasKach.bulletinboard.activity.EditAdsAct
+import com.DimasKach.bulletinboard.activity.FilterActivity
 import com.DimasKach.bulletinboard.adapters.AdsRcAdapter
 import com.DimasKach.bulletinboard.databinding.ActivityMainBinding
 import com.DimasKach.bulletinboard.dialoghelper.DialogConst
@@ -42,12 +44,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var tvAccount: TextView
     private lateinit var imAccount: ImageView
     lateinit var googleSignInLauncher: ActivityResultLauncher <Intent>
+    lateinit var filterLauncher: ActivityResultLauncher <Intent>
     private val dialogHelper = DialogHelper(this)
     val mAuth = Firebase.auth
     val adapter = AdsRcAdapter(this)
     private val firebaseViewModel: FirebaseViewModel by viewModels()
     private var clearUpdate: Boolean = true
     private var currentCategory: String? = null
+    private var filter: String? = "empty"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,8 +63,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         initViewModel()
         bottomMenuOnClick()
         scrollListener()
-
+        onActivityResultFilter()
     }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId == R.id.id_filter){
+           val i = Intent(this@MainActivity, FilterActivity::class.java).apply {
+               putExtra(FilterActivity.FILTER_KEY, filter)
+           }
+            filterLauncher.launch(i)
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
 
     override fun onResume() {
         super.onResume()
@@ -80,9 +100,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 Log.d("MyLog", "Api error: ${e.message}")
             }
         }
-
-
     }
+    private fun onActivityResultFilter(){
+        filterLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()){
+            if(it.resultCode == RESULT_OK){
+                filter = it.data?.getStringExtra(FilterActivity.FILTER_KEY)
+            }
+        }
+    }
+
 
     override fun onStart() {
         super.onStart()

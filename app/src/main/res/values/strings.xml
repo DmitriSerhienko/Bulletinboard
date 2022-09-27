@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Bulletin board</string>
+    <string name="app_name">Дошка оголошень</string>
     <string name="ad_id">ca-app-pub-3940256099942544/6300978111</string>
     <string name="ad_inter_id">	ca-app-pub-3940256099942544/1033173712</string>
     <!-- Menu Drawer -->
@@ -59,6 +59,7 @@
     <string name="width_send">З доставкою</string>
     <string name="send">Доставка</string>
     <string name="publish">Опублікувати</string>
+    <string name="use_filter">Застосувати</string>
     <!-- EAd list Item-->
     <string name="price_desc">Ціна:</string>
     <string name="ad_country">Країна:</string>
