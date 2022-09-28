@@ -8,19 +8,25 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.DimasKach.bulletinboard.MainActivity
 import com.DimasKach.bulletinboard.R
-import com.DimasKach.bulletinboard.activity.DescriptionActivity
 import com.DimasKach.bulletinboard.activity.EditAdsAct
 import com.DimasKach.bulletinboard.model.Ad
 import com.DimasKach.bulletinboard.databinding.AdListItemBinding
-import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class AdsRcAdapter(val act: MainActivity) : RecyclerView.Adapter<AdsRcAdapter.AdHolder>() {
     val adArray = ArrayList<Ad>()
+    private var timeFormatter: SimpleDateFormat? = null
+
+    init {
+        timeFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdHolder {
         val binding = AdListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return AdHolder(binding, act)
+        return AdHolder(binding, act, timeFormatter)
     }
 
     override fun onBindViewHolder(holder: AdHolder, position: Int) {
@@ -48,7 +54,7 @@ class AdsRcAdapter(val act: MainActivity) : RecyclerView.Adapter<AdsRcAdapter.Ad
         adArray.addAll(newList)
     }
 
-    class AdHolder(val binding: AdListItemBinding, val act: MainActivity) :
+    class AdHolder(val binding: AdListItemBinding, val act: MainActivity, formatter: SimpleDateFormat) :
         RecyclerView.ViewHolder(binding.root) {
         fun setData(ad: Ad) = with(binding) {
             tvDescription.text = ad.description
@@ -56,13 +62,22 @@ class AdsRcAdapter(val act: MainActivity) : RecyclerView.Adapter<AdsRcAdapter.Ad
             tvPrice.text = ad.price
             tvViewCounter.text = ad.viewsCounter
             tvFavCounter.text = ad.favCounter
-            Picasso.get().load(ad.mainImage).into(mainImage)
+            val publishTime = "Час публікації: ${ }"
+            tvPublishTime.text = ""
 
+            Picasso.get().load(ad.mainImage).into(mainImage)
             isFav(ad)
             showEditPanel(isOwner(ad))
             mainOnClick(ad)
 
         }
+
+        private fun getTimeFromMills(timeMills: String): String{
+            val c = Calendar.getInstance()
+            c =
+            return timeMills
+        }
+
         private fun mainOnClick (ad: Ad) = with(binding){
             ibFav.setOnClickListener {
                 if(act.mAuth.currentUser?.isAnonymous == false) act.onFavClicked(ad)
