@@ -26,6 +26,7 @@
     <string name="email_reset_pas_was_sent">Лист для зміни паролю було надіслано!</string>
     <string name="sing_up">Реєстрація</string>
     <string name="sing_in">Вхід</string>
+    <string name="sing_in_vs_google">Вхід через GoogleAccount</string>
     <string name="sing_up_action">Зареєструватись</string>
     <string name="sing_up_error">Не вдалось зареєструватись</string>
     <string name="sing_in_error">Не вдалось увійти</string>
@@ -60,6 +61,7 @@
     <string name="send">Доставка</string>
     <string name="publish">Опублікувати</string>
     <string name="use_filter">Застосувати</string>
+    <string name="clear_filter">Очистити фільтр</string>
     <!-- EAd list Item-->
     <string name="price_desc">Ціна:</string>
     <string name="ad_country">Країна:</string>
