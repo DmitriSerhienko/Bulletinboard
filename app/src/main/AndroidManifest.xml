@@ -15,13 +15,13 @@
         <activity
             android:name=".activity.FilterActivity"
             android:theme="@style/AppTheme.Filter"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".activity.DescriptionActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".activity.EditAdsAct"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
