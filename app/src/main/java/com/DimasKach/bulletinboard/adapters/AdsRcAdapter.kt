@@ -21,12 +21,12 @@ class AdsRcAdapter(val act: MainActivity) : RecyclerView.Adapter<AdsRcAdapter.Ad
     private var timeFormatter: SimpleDateFormat? = null
 
     init {
-        timeFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        timeFormatter = SimpleDateFormat("dd/MM/yyyy - hh:mm", Locale.getDefault())
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdHolder {
         val binding = AdListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return AdHolder(binding, act, timeFormatter)
+        return AdHolder(binding, act, timeFormatter!!)
     }
 
     override fun onBindViewHolder(holder: AdHolder, position: Int) {
@@ -54,7 +54,7 @@ class AdsRcAdapter(val act: MainActivity) : RecyclerView.Adapter<AdsRcAdapter.Ad
         adArray.addAll(newList)
     }
 
-    class AdHolder(val binding: AdListItemBinding, val act: MainActivity, formatter: SimpleDateFormat) :
+    class AdHolder(val binding: AdListItemBinding, val act: MainActivity, val formatter: SimpleDateFormat) :
         RecyclerView.ViewHolder(binding.root) {
         fun setData(ad: Ad) = with(binding) {
             tvDescription.text = ad.description
@@ -62,8 +62,8 @@ class AdsRcAdapter(val act: MainActivity) : RecyclerView.Adapter<AdsRcAdapter.Ad
             tvPrice.text = ad.price
             tvViewCounter.text = ad.viewsCounter
             tvFavCounter.text = ad.favCounter
-            val publishTime = "Час публікації: ${ }"
-            tvPublishTime.text = ""
+            val publishTime = "Час публікації: ${getTimeFromMills(ad.time) }"
+            tvPublishTime.text = publishTime
 
             Picasso.get().load(ad.mainImage).into(mainImage)
             isFav(ad)
@@ -74,8 +74,9 @@ class AdsRcAdapter(val act: MainActivity) : RecyclerView.Adapter<AdsRcAdapter.Ad
 
         private fun getTimeFromMills(timeMills: String): String{
             val c = Calendar.getInstance()
-            c =
-            return timeMills
+            c.timeInMillis = timeMills.toLong()
+
+            return formatter.format(c.time)
         }
 
         private fun mainOnClick (ad: Ad) = with(binding){

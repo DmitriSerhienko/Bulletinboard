@@ -1,14 +1,10 @@
 package com.DimasKach.bulletinboard.fragments
 
 import android.app.Activity
-import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.DimasKach.bulletinboard.R
-import com.DimasKach.bulletinboard.databinding.ListImageFragmentBinding
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
