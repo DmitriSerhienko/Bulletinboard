@@ -2,6 +2,7 @@ package com.DimasKach.bulletinboard
 
 import android.app.Activity
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -30,6 +31,7 @@ import com.DimasKach.bulletinboard.databinding.ActivityMainBinding
 import com.DimasKach.bulletinboard.dialoghelper.DialogConst
 import com.DimasKach.bulletinboard.dialoghelper.DialogHelper
 import com.DimasKach.bulletinboard.model.Ad
+import com.DimasKach.bulletinboard.utils.BillingManager
 import com.DimasKach.bulletinboard.utils.FilterManager
 import com.DimasKach.bulletinboard.viewmodel.FirebaseViewModel
 import com.google.android.gms.ads.AdRequest
@@ -57,14 +59,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var currentCategory: String? = null
     private var filter: String = "empty"
     private var filterDb: String = ""
+    private var pref: SharedPreferences? = null
+    private var isPremiumUser = false
+    private var bManager: BillingManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         binding = ActivityMainBinding.inflate(layoutInflater)
-
         setContentView(binding.root)
-        initAds()
+        pref = getSharedPreferences(BillingManager.MAIN_PREF, MODE_PRIVATE)
+        isPremiumUser = pref?.getBoolean(BillingManager.REMOVE_ADS_PREF, false)!!
+        if(!isPremiumUser){
+            initAds()
+           // binding.mainContent.adView2.visibility = View.GONE - убираем рекламу для тестов
+        } else {
+            binding.mainContent.adView2.visibility = View.GONE
+        }
+
         init()
         initRecyclerView()
         initViewModel()
@@ -103,6 +115,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onDestroy() {
         super.onDestroy()
         binding.mainContent.adView2.destroy()
+        bManager?.closeConnection()
     }
 
     private fun initAds() {
@@ -241,6 +254,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.id_dm -> {
                 getAdsFromCat(getString(R.string.ad_dm))
+            }
+            R.id.remove_ads -> {
+                bManager = BillingManager(this)
+                bManager?.startConnection()
             }
             R.id.ac_sing_up -> {
                 dialogHelper.createSingDialog(DialogConst.SING_UP_STATE)
