@@ -26,6 +26,7 @@ import com.DimasKach.bulletinboard.accounthelper.AccountHelper
 import com.DimasKach.bulletinboard.activity.DescriptionActivity
 import com.DimasKach.bulletinboard.activity.EditAdsAct
 import com.DimasKach.bulletinboard.activity.FilterActivity
+import com.DimasKach.bulletinboard.activity.showToast
 import com.DimasKach.bulletinboard.adapters.AdsRcAdapter
 import com.DimasKach.bulletinboard.databinding.ActivityMainBinding
 import com.DimasKach.bulletinboard.dialoghelper.DialogConst
@@ -49,8 +50,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var binding: ActivityMainBinding
     private lateinit var tvAccount: TextView
     private lateinit var imAccount: ImageView
-    lateinit var googleSignInLauncher: ActivityResultLauncher <Intent>
-    lateinit var filterLauncher: ActivityResultLauncher <Intent>
+    lateinit var googleSignInLauncher: ActivityResultLauncher<Intent>
+    lateinit var filterLauncher: ActivityResultLauncher<Intent>
     private val dialogHelper = DialogHelper(this)
     val mAuth = Firebase.auth
     val adapter = AdsRcAdapter(this)
@@ -70,9 +71,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(binding.root)
         pref = getSharedPreferences(BillingManager.MAIN_PREF, MODE_PRIVATE)
         isPremiumUser = pref?.getBoolean(BillingManager.REMOVE_ADS_PREF, false)!!
-        if(!isPremiumUser){
+        if (!isPremiumUser) {
             initAds()
-           // binding.mainContent.adView2.visibility = View.GONE - убираем рекламу для тестов
+            // binding.mainContent.adView2.visibility = View.GONE - убираем рекламу для тестов
         } else {
             binding.mainContent.adView2.visibility = View.GONE
         }
@@ -91,10 +92,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == R.id.id_filter){
-           val i = Intent(this@MainActivity, FilterActivity::class.java).apply {
-               putExtra(FilterActivity.FILTER_KEY, filter)
-           }
+        if (item.itemId == R.id.id_filter) {
+            val i = Intent(this@MainActivity, FilterActivity::class.java).apply {
+                putExtra(FilterActivity.FILTER_KEY, filter)
+            }
             filterLauncher.launch(i)
         }
         return super.onOptionsItemSelected(item)
@@ -126,7 +127,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun onActivityResult() {
         googleSignInLauncher = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()){
+            ActivityResultContracts.StartActivityForResult()) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
             try {
                 val account = task.getResult(ApiException::class.java)
@@ -138,15 +139,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
     }
-    private fun onActivityResultFilter(){
+
+    private fun onActivityResultFilter() {
         filterLauncher = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()){
-            if(it.resultCode == RESULT_OK){
+            ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == RESULT_OK) {
                 filter = it.data?.getStringExtra(FilterActivity.FILTER_KEY)!!
                 //Log.d("MyLog", "Filter: $filter")
                 //Log.d("MyLog", "getFilter: ${FilterManager.getFilter(filter)}")
                 filterDb = FilterManager.getFilter(filter)
-            } else if(it.resultCode == RESULT_CANCELED){
+            } else if (it.resultCode == RESULT_CANCELED) {
                 filterDb = ""
                 filter = "empty"
             }
@@ -162,22 +164,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun initViewModel() {
         firebaseViewModel.liveAdsData.observe(this) {
             val list = getAdsByCategory(it)
-            if(!clearUpdate){
+            if (!clearUpdate) {
                 adapter.upDateAdapter(list)
-            }else {
+            } else {
                 adapter.upDateAdapterWithClear(list)
             }
 
-            binding.mainContent.tvEmpty.visibility = if (adapter.itemCount == 0) View.VISIBLE else View.GONE
+            binding.mainContent.tvEmpty.visibility =
+                if (adapter.itemCount == 0) View.VISIBLE else View.GONE
         }
     }
-    private fun getAdsByCategory(list: ArrayList<Ad>): ArrayList<Ad>{
+
+    private fun getAdsByCategory(list: ArrayList<Ad>): ArrayList<Ad> {
         val tempList = ArrayList<Ad>()
         tempList.addAll(list)
-        if(currentCategory != getString(R.string.ad_def)){
+        if (currentCategory != getString(R.string.ad_def)) {
             tempList.clear()
-            list.forEach{
-                if(currentCategory == it.category) tempList.add(it)
+            list.forEach {
+                if (currentCategory == it.category) tempList.add(it)
             }
         }
         tempList.reverse()
@@ -209,8 +213,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             clearUpdate = true
             when (item.itemId) {
                 R.id.id_new_ad -> {
-                    val i = Intent(this@MainActivity, EditAdsAct::class.java)
-                    startActivity(i)
+                    if (mAuth.currentUser != null) {
+                        if (!mAuth.currentUser?.isAnonymous!!) {
+                            val i = Intent(this@MainActivity, EditAdsAct::class.java)
+                            startActivity(i)
+                        } else {
+                            showToast("Гість не може створювати публікації")
+                        }
+
+                    } else {
+                        showToast("Помилка реєстрації!")
+                    }
+
                 }
                 R.id.id_my_ads -> {
                     firebaseViewModel.loadMyAds()
@@ -279,7 +293,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    private fun getAdsFromCat(cat: String){
+    private fun getAdsFromCat(cat: String) {
         currentCategory = cat
         firebaseViewModel.loadAllAdsFromCat(cat, filterDb)
     }
@@ -295,7 +309,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else if (user.isAnonymous) {
             tvAccount.setText(R.string.anonymous_enter)
             imAccount.setImageResource(R.drawable.ic_account_def)
-        } else if(!user.isAnonymous){
+        } else if (!user.isAnonymous) {
             tvAccount.text = user.email
             Picasso.get().load(user.photoUrl).into(imAccount)
         }
@@ -316,7 +330,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         firebaseViewModel.onFavClick(ad)
     }
 
-    private fun navViewSettings() = with(binding){
+    private fun navViewSettings() = with(binding) {
         val menu = navView.menu
         val adsCat = menu.findItem(R.id.adsCat)
         val spanAdsCat = SpannableString(adsCat.title)
@@ -336,7 +350,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             override fun onScrollStateChanged(recView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recView, newState)
                 if (!recView.canScrollVertically(SCROLL_DOWN)
-                    && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    && newState == RecyclerView.SCROLL_STATE_IDLE
+                ) {
                     clearUpdate = false
                     val adsList = firebaseViewModel.liveAdsData.value!!
                     if (adsList.isNotEmpty()) {
@@ -347,7 +362,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         })
     }
 
-    private fun getAdsFromCats(adsList: ArrayList<Ad>){
+    private fun getAdsFromCats(adsList: ArrayList<Ad>) {
         adsList[0].let {
             if (currentCategory != getString(R.string.ad_def)) {
                 firebaseViewModel.loadAllAdsFromCatNextPage(it.category!!, it.time!!, filterDb)

@@ -153,10 +153,15 @@ class DbManager {
         readNextPageFromDb(query, filter, orderBy, readDataCallback )
     }
 
-
     fun deleteAd(ad: Ad, listener: FinishWorkListener) {
         if (ad.key == null || ad.uid == null) return
-        db.child(ad.key).child(ad.uid).removeValue().addOnCompleteListener {
+        val map = mapOf(
+            "/adFilter" to null,
+            "/info" to null,
+            "/favs" to null,
+            "/${ad.uid}" to null
+        )
+        db.child(ad.key).updateChildren(map).addOnCompleteListener {
             if (it.isSuccessful) listener.onFinish(true)
         }
     }
