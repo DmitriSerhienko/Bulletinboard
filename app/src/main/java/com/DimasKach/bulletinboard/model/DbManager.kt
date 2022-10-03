@@ -25,7 +25,7 @@ class DbManager {
                 val adFilter = FilterManager.createFilter(ad)
                 db.child(ad.key ?: "empty").child(FILTER_NODE)
                     .setValue(adFilter).addOnCompleteListener {
-                        finishListener.onFinish()
+                        finishListener.onFinish(it.isSuccessful)
                     }
             }
     }
@@ -55,7 +55,7 @@ class DbManager {
                     .child(uid)
                     .setValue(uid)
                     .addOnCompleteListener {
-                        if (it.isSuccessful) listener.onFinish()
+                        if (it.isSuccessful) listener.onFinish(true)
                     }
             }
         }
@@ -69,7 +69,7 @@ class DbManager {
                     .child(uid)
                     .removeValue()
                     .addOnCompleteListener {
-                        if (it.isSuccessful) listener.onFinish()
+                        if (it.isSuccessful) listener.onFinish(true)
                     }
             }
         }
@@ -157,7 +157,7 @@ class DbManager {
     fun deleteAd(ad: Ad, listener: FinishWorkListener) {
         if (ad.key == null || ad.uid == null) return
         db.child(ad.key).child(ad.uid).removeValue().addOnCompleteListener {
-            if (it.isSuccessful) listener.onFinish()
+            if (it.isSuccessful) listener.onFinish(true)
         }
     }
 
@@ -232,7 +232,7 @@ class DbManager {
     }
 
     interface FinishWorkListener {
-        fun onFinish()
+        fun onFinish(isDone: Boolean)
     }
 
     companion object {

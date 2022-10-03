@@ -113,15 +113,33 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     //ВИДЕО 100 ТАМ ФУНКЦИЯ НИЖЕ НЕ ТАКАЯ , ПЕРЕДАЕТСЯ В НЕЁ view: View НАДО ПЕРЕСМОТРЕТЬ ТАКЖЕ ЧАСТЬ ПОСЛЕ ИФ И ДО ДБ МЕНЕДЖЕРА УБРАЛИ СПЕЦОМ
     fun onClickPublish() = with(binding) {
         btPublish.setOnClickListener {
+            if(isFieldEmpty()){
+                showToast("Всі поля мають бути заповнені!")
+                return@setOnClickListener
+            }
+            progressLayuot.visibility = View.VISIBLE
             ad = fillAd()
             uploadImages()
         }
     }
 
+    private fun isFieldEmpty(): Boolean = with(binding){
+        return tvCountry.text.toString() == getString(R.string.select_country)
+                || tvCity.text.toString() == getString(R.string.select_city)
+                || tvCat.text.toString() == getString(R.string.select_category)
+                || edTitle.text.isEmpty()
+                || editTel.text.isEmpty()
+                || editIndex.text.isEmpty()
+                || edPrice.text.isEmpty()
+                || editDescription.text.isEmpty()
+                || editEmail.text.isEmpty()
+    }
+
     private fun onPublishFinish(): DbManager.FinishWorkListener {
         return object : DbManager.FinishWorkListener {
-            override fun onFinish() {
-                finish()
+            override fun onFinish(isDone: Boolean) {
+                binding.progressLayuot.visibility = View.GONE
+                if(isDone) finish()
             }
         }
     }

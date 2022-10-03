@@ -36,7 +36,7 @@ class ImageListFragment(
     lateinit var binding: ListImageFragmentBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = ListImageFragmentBinding.inflate(layoutInflater)
+        binding = ListImageFragmentBinding.inflate(layoutInflater, container, false)
         adView = binding.adView
         return binding.root
     }
