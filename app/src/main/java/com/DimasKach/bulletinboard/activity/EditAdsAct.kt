@@ -28,11 +28,12 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     lateinit var binding: ActivityEditAdsBinding
     private val dialog = DialogSpinnerHelper()
     lateinit var imageAdapter: ImageAdapter
+    private val dbManager = DbManager()
     private var isEditState = false
     private var ad: Ad? = null
+    private var imageIndex = 0
     var editImagePos = 0
-    private var imageIndex =0
-    private val dbManager = DbManager()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,19 +45,20 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         onClickPublish()
     }
 
-    private fun checkEditState(){
+    private fun checkEditState() {
         isEditState = isEditState()
-        if(isEditState){
+        if (isEditState) {
             ad = intent.getSerializableExtra(MainActivity.ADS_DATA) as Ad
-            if (ad!= null) fillViews(ad!!)
+            if (ad != null) fillViews(ad!!)
         }
     }
 
-    private fun isEditState(): Boolean{
+    private fun isEditState(): Boolean {
         return intent.getBooleanExtra(MainActivity.EDIT_STATE, false)
 
     }
-    private fun fillViews(ad: Ad) = with(binding){
+
+    private fun fillViews(ad: Ad) = with(binding) {
         tvCountry.text = ad.country
         tvCity.text = ad.city
         editTel.setText(ad.tel)
@@ -100,37 +102,33 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
 
     fun onClickGetImages(view: View) {
         if (imageAdapter.mainArray.size == 0) {
-            ImagePicker.getMultiImages(this,  3)
+            ImagePicker.getMultiImages(this, 3)
         } else {
             openChooseImageFrag(null)
             chooseImageFragment?.upDateAdapterFromEdit(imageAdapter.mainArray)
         }
     }
 
-    fun onClickPublish() = with(binding){
+    //ВИДЕО 100 ТАМ ФУНКЦИЯ НИЖЕ НЕ ТАКАЯ , ПЕРЕДАЕТСЯ В НЕЁ view: View НАДО ПЕРЕСМОТРЕТЬ ТАКЖЕ ЧАСТЬ ПОСЛЕ ИФ И ДО ДБ МЕНЕДЖЕРА УБРАЛИ СПЕЦОМ
+    fun onClickPublish() = with(binding) {
         btPublish.setOnClickListener {
             ad = fillAd()
-            if (isEditState) {
-                ad?.copy(key = ad?.key)?.let { dbManager.publishAd(it, onPublishFinish() ) }
-            } else {
-                uploadImages()
-            }
+            uploadImages()
         }
-
     }
 
-    private fun onPublishFinish(): DbManager.FinishWorkListener{
-        return  object: DbManager.FinishWorkListener{
+    private fun onPublishFinish(): DbManager.FinishWorkListener {
+        return object : DbManager.FinishWorkListener {
             override fun onFinish() {
                 finish()
             }
         }
     }
 
-    private fun fillAd(): Ad{
-        val ad: Ad
+    private fun fillAd(): Ad {
+        val adTemp: Ad
         binding.apply {
-            ad = Ad(
+            adTemp = Ad(
                 tvCountry.text.toString(),
                 tvCity.text.toString(),
                 editTel.text.toString(),
@@ -141,16 +139,16 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
                 edPrice.text.toString(),
                 editDescription.text.toString(),
                 editEmail.text.toString(),
-                "empty",
-                "empty",
-                "empty",
-                dbManager.db.push().key,
+                ad?.mainImage ?: "empty",
+                ad?.image2 ?: "empty",
+                ad?.image3 ?: "empty",
+                ad?.key ?: dbManager.db.push().key,
                 "0",
                 dbManager.auth.uid,
-                System.currentTimeMillis().toString()
+                ad?.time ?: System.currentTimeMillis().toString()
             )
         }
-        return ad
+        return adTemp
     }
 
 
@@ -162,55 +160,92 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
 
     fun openChooseImageFrag(newList: ArrayList<Uri>?) {
         chooseImageFragment = ImageListFragment(this)
-        if(newList != null )chooseImageFragment?.resizeSelectedImage(newList, true, this)
+        if (newList != null) chooseImageFragment?.resizeSelectedImage(newList, true, this)
         binding.scrollViewMain.visibility = View.GONE
         val fm = supportFragmentManager.beginTransaction()
         fm.replace(R.id.place_holder, chooseImageFragment!!)
         fm.commit()
     }
 
-    private fun uploadImages(){
-        if(imageAdapter.mainArray.size == imageIndex){
+    private fun uploadImages() {
+        if (imageIndex == 3) {
             dbManager.publishAd(ad!!, onPublishFinish())
             return
         }
-        val byteArray = prepareImageByteArray(imageAdapter.mainArray[imageIndex])
-        uploadImage(byteArray){
-            nextImage(it.result.toString())
+        val oldUrl = getUrlFromAd()
+        if (imageAdapter.mainArray.size > imageIndex) {
+            val byteArray = prepareImageByteArray(imageAdapter.mainArray[imageIndex])
+            if (oldUrl.startsWith("http")) {
+                updateImage(byteArray, oldUrl) {
+                    nextImage(it.result.toString())
+                }
+            } else {
+                uploadImage(byteArray) {
+                    nextImage(it.result.toString())
+                }
+            }
+
+        } else {
+            if (oldUrl.startsWith("http")) {
+                deleteImageByUrl(oldUrl) {
+                    nextImage("empty")
+                }
+            } else {
+                nextImage("empty")
+            }
         }
+
     }
-    private fun nextImage (uri: String){
+
+    private fun nextImage(uri: String) {
         setImageUriToAd(uri)
         imageIndex++
         uploadImages()
     }
 
-    private fun setImageUriToAd(uri: String){
-        when (imageIndex){
+    private fun setImageUriToAd(uri: String) {
+        when (imageIndex) {
             0 -> ad = ad?.copy(mainImage = uri)
             1 -> ad = ad?.copy(image2 = uri)
             2 -> ad = ad?.copy(image3 = uri)
         }
     }
 
-    private fun prepareImageByteArray(bitmap: Bitmap): ByteArray{
+    private fun getUrlFromAd(): String {
+        return listOf(ad?.mainImage!!, ad?.image2!!, ad?.image3!!)[imageIndex]
+    }
+
+    private fun prepareImageByteArray(bitmap: Bitmap): ByteArray {
         val outStream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 20, outStream)
         return outStream.toByteArray()
     }
 
-    private fun uploadImage(byteArray: ByteArray, listener: OnCompleteListener<Uri>){
+    private fun uploadImage(byteArray: ByteArray, listener: OnCompleteListener<Uri>) {
         val imStorageRef = dbManager.dbStorage
             .child(dbManager.auth.uid!!)
             .child("image_${System.currentTimeMillis()}")
         val upTask = imStorageRef.putBytes(byteArray)
-        upTask.continueWithTask{
-                task -> imStorageRef.downloadUrl
+        upTask.continueWithTask { task ->
+            imStorageRef.downloadUrl
         }.addOnCompleteListener(listener)
     }
 
-    private fun imageChangeCounter(){
-        binding.vpImages.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback(){
+    private fun deleteImageByUrl(oldUrl: String, listener: OnCompleteListener<Void>) {
+        val oldStorageRef = dbManager.dbStorage.storage.getReferenceFromUrl(oldUrl)
+            .delete().addOnCompleteListener(listener)
+    }
+
+    private fun updateImage(byteArray: ByteArray, url: String, listener: OnCompleteListener<Uri>) {
+        val imStorageRef = dbManager.dbStorage.storage.getReferenceFromUrl(url)
+        val upTask = imStorageRef.putBytes(byteArray)
+        upTask.continueWithTask { task ->
+            imStorageRef.downloadUrl
+        }.addOnCompleteListener(listener)
+    }
+
+    private fun imageChangeCounter() {
+        binding.vpImages.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 val imageCounter = "${position + 1}/${binding.vpImages.adapter?.itemCount}"
