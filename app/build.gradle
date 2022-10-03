@@ -6,10 +6,19 @@ plugins {
 
 android {
     compileSdk 32
+    buildToolsVersion "30.0.3"
+//    signingConfigs{
+//        release{
+//            storeFile file ('C:\\Users\\38093\\Desktop\\Kotlin\\BuletinBoardKeys\\bundleKey1.jks')
+//            storePassword '555557'
+//            keyAlias 'BB'
+//            keyPassword '555557'
+//        }
+//    }
 
     defaultConfig {
         applicationId "com.DimasKach.bulletinboard"
-        minSdk 26
+        minSdk 21
         targetSdk 32
         versionCode 1
         versionName "1.0"
