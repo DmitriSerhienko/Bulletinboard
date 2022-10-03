@@ -15,7 +15,7 @@ class DbManager {
     val db =
         Firebase.database("https://bulettinboard-default-rtdb.europe-west1.firebasedatabase.app/")
             .getReference(MAIN_NODE)
-    val dbStorage = Firebase.storage.getReference(MAIN_NODE)
+    val dbStorage = Firebase.storage("gs://bulettinboard.appspot.com").getReference(MAIN_NODE)
     val auth = Firebase.auth
 
     fun publishAd(ad: Ad, finishListener: FinishWorkListener) {
@@ -155,17 +155,37 @@ class DbManager {
 
     fun deleteAd(ad: Ad, listener: FinishWorkListener) {
         if (ad.key == null || ad.uid == null) return
-        val map = mapOf(
+        val deleteMap = mapOf(
             "/adFilter" to null,
             "/info" to null,
             "/favs" to null,
             "/${ad.uid}" to null
         )
-        db.child(ad.key).updateChildren(map).addOnCompleteListener {
-            if (it.isSuccessful) listener.onFinish(true)
+        db.child(ad.key).updateChildren(deleteMap).addOnCompleteListener {
+            if (it.isSuccessful) deleteImagesFromStorage(ad, 0, listener)
         }
     }
 
+    private fun deleteImagesFromStorage(ad: Ad, index: Int, listener: FinishWorkListener){
+        val imageList = listOf(ad.mainImage, ad.image2, ad.image3)
+        if(ad.mainImage == "empty"){
+            listener.onFinish(true)
+            return
+        }
+        dbStorage.storage.getReferenceFromUrl(imageList[index]).delete().addOnCompleteListener {
+            if (it.isSuccessful) {
+                if(imageList.size > index +1){
+                    if(imageList[index + 1] != "empty"){
+                        deleteImagesFromStorage(ad, index +1, listener)
+                    } else {
+                        listener.onFinish(true)
+                    }
+                } else{
+                    listener.onFinish(true)
+                }
+            }
+        }
+    }
 
     private fun readDataFromDb(query: Query, readDataCallback: ReadDataCallback?) {
         query.addListenerForSingleValueEvent(object : ValueEventListener {
