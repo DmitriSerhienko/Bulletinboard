@@ -1,6 +1,6 @@
 Bulletinboard
 
-App like OLX, where u can publish your Ad? working with Firebase and GoogleAuth
+App like OLX, where u can publish your Ad, working with Firebase and GoogleAuth
 
 Stack:  Retrofit, Room, Navigation, Firebase, Google auth, RecycleView
 
